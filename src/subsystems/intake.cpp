@@ -1,116 +1,52 @@
 #include "main.h"
 #include "okapi/api/util/mathUtil.hpp"
+#include "okapi/impl/device/button/controllerButton.hpp"
+#include "okapi/impl/device/controllerUtil.hpp"
+#include "ports.hpp"
 #include "pros/vision.hpp"
 
 using namespace okapi;
 
-Motor conveyor(conveyorPort, false, AbstractMotor::gearset::green, AbstractMotor::encoderUnits::degrees);
+Motor conveyor(conveyorPort, false, AbstractMotor::gearset::green,
+               AbstractMotor::encoderUnits::degrees);
 
-bool released1 = true;
-bool released2 = true;
-bool releasedA = true;
+enum class IntakeState {
+  STOPPED = 0,
+  INTAKING = 1,
+  OUTTAKING = 2,
+};
 
+IntakeState currentIntakeState = IntakeState::STOPPED;
+IntakeState previousIntakeState = IntakeState::STOPPED;
 
-bool toggle1 = false;
-bool toggle2 = false;
-bool toggleA = false;
+ControllerButton intakeToggle = ControllerButton(ControllerDigital::R1);
+ControllerButton outakeButton = ControllerButton(ControllerDigital::B);
 
+void updateConveyor() {
+  if (outakeButton.changedToPressed()) {
+    previousIntakeState = currentIntakeState;
+    currentIntakeState = IntakeState::OUTTAKING;
+  } else if (outakeButton.changedToReleased()) {
+    currentIntakeState = previousIntakeState;
+  }
 
-void rollerRed()
-{
-
-pros::Vision vision_sensor (8);
-
-
-  if ( vision_sensor.get_object_count() > 0){
-    while((vision_sensor.get_object_count()) > 0){
-      conveyor.moveVelocity(600);
+  if (intakeToggle.changedToPressed()) {
+    if (currentIntakeState != IntakeState::INTAKING) {
+      currentIntakeState = IntakeState::INTAKING;
+    } else {
+      currentIntakeState = IntakeState::STOPPED;
     }
-    pros::delay(20);
-    while(vision_sensor.get_object_count()  < 1){
-     conveyor.moveVelocity(600);
-    }
-    
-     conveyor.moveVelocity(0);
-  } else if (vision_sensor.get_object_count() < 1){
-    while(vision_sensor.get_object_count()  < 1){
-     conveyor.moveVelocity(600);
-    }
+  }
+
+  switch (currentIntakeState) {
+  case IntakeState::STOPPED:
+    conveyor.moveVoltage(0);
+    break;
+  case IntakeState::INTAKING:
+    conveyor.moveVoltage(12000);
+    break;
+  case IntakeState::OUTTAKING:
+    conveyor.moveVoltage(-12000);
+    break;
   }
 }
-
-void rollerBlue()
-{
-
-  
-}
-
-void updateConveyor()
-{
-
-  if (controller.getDigital(ControllerDigital::R1) == 0)
-  {
-      released1 = true;
-  }
-
-
-  if (controller.getDigital(ControllerDigital::R1) == 1 && released1)
-  {
-      released1 = false;
-
-    toggle2 = false;
-    if (!toggle1){
-      conveyor.moveVelocity(600);
-      toggle1 = true;
-    } else if (toggle1){
-      conveyor.moveVelocity(0);
-      toggle1 = false;
-    }
-    
-  }
-
-   if (controller.getDigital(ControllerDigital::R2) == 0)
-  {
-      released2 = true;
-  }
-
-   if (controller.getDigital(ControllerDigital::R2) == 1 && released2){
- 
- 
-    released2 = false;
-
-    toggle1 = false;
-    if (!toggle2){
-      conveyor.moveVelocity(-600);
-      toggle2 = true;
-    } else if (toggle2){
-      conveyor.moveVelocity(0);
-      toggle2 = false;
-    }
-
-  }
-  
-
-  if (controller.getDigital(ControllerDigital::B) == 1 )
-  {
-    rollerRed();
-  }
-
-
-}
-
-
-/*
-  else if (controller.getDigital(ControllerDigital::R2) == 1)
-  {
-    conveyor.moveVelocity(-600);
-  }
-  else
-  {
-    conveyor.moveVelocity(0);
-  }
-}
-
-*/
-
-

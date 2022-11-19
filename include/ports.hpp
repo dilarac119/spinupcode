@@ -14,8 +14,6 @@ const int leftFrontPort = 11;
 const int leftTopPort = 19;
 const int leftBottomPort = 18;
 
-
-
 //conveyor port
 const int conveyorPort = 9;
 
@@ -36,5 +34,6 @@ const std::uint8_t encoderRPort2 = 'D';
 const std::uint8_t encoderCPort1 = 'E';
 const std::uint8_t encoderCPort2 = 'F';
 
-
+//const int inertialPort = 20;
+//const int inertial2Port = 5;
 const std::uint8_t imuPort = 20;

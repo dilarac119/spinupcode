@@ -1,7 +1,7 @@
-
-
+#pragma once
 #include "main.h"
-#include "okapi/impl/device/rotarysensor/potentiometer.hpp"
+#include "pros/motors.h"
+//#include "okapi/impl/device/rotarysensor/potentiometer.hpp"
 
 using namespace okapi;
 
@@ -13,8 +13,8 @@ extern Motor leftFront;
 extern Motor leftTop;
 extern Motor leftBottom;
 
-extern std::shared_ptr<OdomChassisController> chassis;
+extern std::shared_ptr<OdomChassisController> drive;
 
-//void updateAuton();
+// void updateAuton();
 
-void test();
+void auton1();

@@ -1,31 +1,48 @@
 
 #include "main.h"
+#include "okapi/impl/device/rotarysensor/potentiometer.hpp"
+#include "ports.hpp"
 
 using namespace okapi;
 
-Motor rightFront(rightFrontPort, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);
-Motor rightTop(rightTopPort, true, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);
-Motor rightBottom(rightBottomPort, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);
+Motor rightFront(rightFrontPort, false, AbstractMotor::gearset::blue,
+                 AbstractMotor::encoderUnits::degrees);
+Motor rightTop(rightTopPort, true, AbstractMotor::gearset::blue,
+               AbstractMotor::encoderUnits::degrees);
+Motor rightBottom(rightBottomPort, false, AbstractMotor::gearset::blue,
+                  AbstractMotor::encoderUnits::degrees);
 
-Motor leftFront(leftFrontPort, true, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);
-Motor leftTop(leftTopPort, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);
-Motor leftBottom(leftBottomPort, true, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);
+Motor leftFront(leftFrontPort, true, AbstractMotor::gearset::blue,
+                AbstractMotor::encoderUnits::degrees);
+Motor leftTop(leftTopPort, false, AbstractMotor::gearset::blue,
+              AbstractMotor::encoderUnits::degrees);
+Motor leftBottom(leftBottomPort, true, AbstractMotor::gearset::blue,
+                 AbstractMotor::encoderUnits::degrees);
 
-std::shared_ptr<ChassisController> drive =
-  ChassisControllerBuilder()
-  .withMotors({leftFront, leftTop, leftBottom}, {rightFront, rightTop, rightBottom})
-  .withDimensions(AbstractMotor::gearset::blue, {{4_in, 13.7_in}, imev5BlueTPR})
-  .build();
-  
-  void updateDrive()
-{
- //tank
-  drive -> getModel() -> tank(controller.getAnalog(ControllerAnalog::leftY), controller.getAnalog(ControllerAnalog::rightY));
- //arcade
- //  drive->getModel()->arcade(controller.getAnalog(ControllerAnalog::leftY), controller.getAnalog(ControllerAnalog::leftX));
- 
-  if (controller.getDigital(ControllerDigital::left) == 1)
-  {
+std::shared_ptr<OdomChassisController> drive =
+    ChassisControllerBuilder()
+        .withMotors({leftFront, leftTop, leftBottom},
+                    {rightFront, rightTop, rightBottom})
+        .withDimensions(AbstractMotor::gearset::blue,
+                        {{4_in, 13.7_in}, imev5BlueTPR})
+        .withSensors(
+            // ADIEncoder{encoderLPort1, encoderLPort2}, // Left encoder
+            // ADIEncoder{encoderRPort1, encoderRPort2},  // Right encoder
+            // ADIEncoder{encoderCPort1, encoderCPort2, true}  // Center encoder
+            // reversed
+            leftFront.getEncoder(), rightFront.getEncoder())
+        // Specify the tracking wheels diam (2.75 in), track (7 in), and TPR
+        // (360)
+        .withOdometry({{2.75_in, 7.5_in, 1_in, 2.75_in}, quadEncoderTPR})
+        .buildOdometry();
+
+static Controller controller = Controller();
+
+void updateDrive() {
+  drive->getModel()->tank(controller.getAnalog(ControllerAnalog::leftY),
+                          controller.getAnalog(ControllerAnalog::rightY));
+
+  if (controller.getDigital(ControllerDigital::left) == 1) {
     leftFront.setBrakeMode(AbstractMotor::brakeMode::hold);
     leftTop.setBrakeMode(AbstractMotor::brakeMode::hold);
     leftBottom.setBrakeMode(AbstractMotor::brakeMode::hold);
@@ -34,8 +51,8 @@ std::shared_ptr<ChassisController> drive =
     rightTop.setBrakeMode(AbstractMotor::brakeMode::hold);
     rightBottom.setBrakeMode(AbstractMotor::brakeMode::hold);
   }
-  else if (controller.getDigital(ControllerDigital::right) == 1)
-  {
+
+  else if (controller.getDigital(ControllerDigital::right) == 1) {
     leftFront.setBrakeMode(AbstractMotor::brakeMode::coast);
     leftTop.setBrakeMode(AbstractMotor::brakeMode::coast);
     leftBottom.setBrakeMode(AbstractMotor::brakeMode::coast);
@@ -44,6 +61,4 @@ std::shared_ptr<ChassisController> drive =
     rightTop.setBrakeMode(AbstractMotor::brakeMode::coast);
     rightBottom.setBrakeMode(AbstractMotor::brakeMode::coast);
   }
-
 }
-

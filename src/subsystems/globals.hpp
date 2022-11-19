@@ -1,3 +1,5 @@
+
+#pragma once
 #include "main.h"
 
 extern okapi::Controller controller;
@@ -9,4 +11,4 @@ extern okapi::ADIEncoder centerEncoder;
 
 //extern pros::Vision visionSensor;
 
- extern okapi::IMU imu;
+// extern okapi::IMU imu;

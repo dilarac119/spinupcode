@@ -52,7 +52,7 @@
  */
 // using namespace pros;
 // using namespace pros::literals;
-using namespace okapi;
+// using namespace okapi;
 
 /**
  * Prototypes for the competition control tasks are redefined here to ensure
@@ -75,19 +75,18 @@ void opcontrol(void);
 /**
  * You can add C++-only headers here
  */
-#include "subsystems/auton.hpp"
-#include "subsystems/drive.hpp"
-#include "subsystems/flywheel.hpp"
-#include "subsystems/indexer.hpp"
-#include "subsystems/intake.hpp" 
-#include "subsystems/ports.hpp"
-#include "subsystems/globals.hpp"
-#include "subsystems/odom.hpp"
-
+// #include "subsystems/auton.hpp"
+// #include "subsystems/drive.hpp"
+// #include "subsystems/flywheel.hpp"
+// #include "subsystems/indexer.hpp"
+// #include "subsystems/intake.hpp"
+// #include "subsystems/ports.hpp"
+// #include "subsystems/globals.hpp"
+// #include "subsystems/odom.hpp"
 
 //#include <include/okapi/impl/device/controllerUtil.hpp>
 
 //#include <iostream>
 #endif
 
-#endif  // _PROS_MAIN_H_
+#endif // _PROS_MAIN_H_

@@ -1,114 +1,82 @@
+#include "flywheel.hpp"
 #include "main.h"
+#include "okapi/impl/device/button/controllerButton.hpp"
+#include "okapi/impl/device/controllerUtil.hpp"
+#include "ports.hpp"
+#include "pros/rtos.hpp"
 
 using namespace okapi;
 
-bool released3 = true;
-bool released4 = true;
 
 
-bool toggle3 = false;
-bool toggle4 = false;
+Motor flywheel(flywheelPort, false, AbstractMotor::gearset::blue,
+               AbstractMotor::encoderUnits::degrees);
 
-Motor flywheel(flywheelPort,false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);
+enum class FlywheelState {
+  OFF = 0,
+  HALF_SPEED = 1,
+  FULL_SPEED = 2,
+};
 
-int flywheelState;
-bool released = true;
-bool toggle = false;
+FlywheelState currentFlywheelState = FlywheelState::OFF;
+FlywheelState previousFlywheelState = FlywheelState::OFF;
 
-int prevError = 0;
+static float target = 0;
 
-void updateFlywheel()
-{
+ControllerButton flywheelToggle = ControllerButton(ControllerDigital::L1);
 
-  if (controller.getDigital(ControllerDigital::L1) == 0)
-  {
-      released3 = true;
-  }
+void init() {
+  pros::Task flywheelControlHandle(controlFlywheelTask);
+  pros::Task updateFlywheelHandle(updateFlywheelTask);
+}
 
-
-  if (controller.getDigital(ControllerDigital::L1) == 1 && released3)
-  {
-      released3 = false;
-
-    toggle4 = false;
-    if (!toggle3){
-      flywheel.moveVelocity(600);
-      toggle3 = true;
-    } else if (toggle3){
-      flywheel.moveVelocity(0);
-      toggle3 = false;
+void controlFlywheelTask(void *) {
+  while (true) {
+    if (target == 0) {
+      flywheel.moveVoltage(0);
+      continue;
     }
-    
-  }
-
-   if (controller.getDigital(ControllerDigital::L2) == 0)
-  {
-      released4 = true;
-  }
-
-   if (controller.getDigital(ControllerDigital::L2) == 1 && released4){
- 
- 
-    released4 = false;
-
-    toggle3 = false;
-    if (!toggle4){
-      flywheel.moveVelocity(400);
-      toggle4 = true;
-    } else if (toggle4){
-      flywheel.moveVelocity(0);
-      toggle4 = false;
+    float error = target - (flywheel.getActualVelocity() * 5.0f);
+    if (error > (target - 75.0f)) {
+      flywheel.moveVoltage(12000);
+    } else if (error <= -75.0f) {
+      flywheel.moveVoltage(0);
+    } else { // Within threshold window -> Use Feedforward and P Controller
+      flywheel.moveVoltage((target * 4.0f) + (error * 1.125f));
     }
-
-  }
-  
-  if (toggle4) {
-    double kP = 0.1;
-    double ki = 0.0;
-    double kd = 0.1;
-
-    int error = 400-flywheel.getActualVelocity();
-    int integral = integral + error;
-    int derivative = error - prevError;
-    int prevError = error;
-    int p = error * kP;
-    int i = integral * ki;
-    int d = derivative * kd;
-
-    flywheel.moveVelocity(400+p+i+d);
+    pros::delay(20);
   }
 }
-  
-/*  
-   if (controller.getDigital(ControllerDigital::R1) == 0)
-  {
-      released = true;
-  }
-  if (controller.getDigital(ControllerDigital::L1) == 1 && released)
-  {
-    released = false;
-    if (!secondPress){
-      flywheel.moveVelocity(600);
-      secondPress = true;
-    } else if (secondPress){
-      flywheel.moveVelocity(0);
-      secondPress = false;
+
+void updateFlywheelTask(void *) {
+  while (true) {
+    if (flywheelToggle.changedToPressed()) {
+
+      switch (currentFlywheelState) {
+      case FlywheelState::OFF:
+        currentFlywheelState = FlywheelState::HALF_SPEED;
+        break;
+      case FlywheelState::HALF_SPEED:
+        currentFlywheelState = FlywheelState::FULL_SPEED;
+        break;
+      case FlywheelState::FULL_SPEED:
+        currentFlywheelState = FlywheelState::OFF;
+        break;
+      }
     }
-  }
-}
-  
-  else if (controller.getDigital(ControllerDigital::L2) == 1)
-  {
-    flywheelState = 2;
-  }
-  switch (flywheelState)
-  {
-    case 1:
-      flywheel.moveVelocity(600);
+
+    switch (currentFlywheelState) {
+    case FlywheelState::OFF:
+      target = 0;
       break;
-    case 2:
-      flywheel.moveVelocity(0);
+    case FlywheelState::HALF_SPEED:
+      target = 2000;
       break;
+    case FlywheelState::FULL_SPEED:
+      target = 3000;
+      break;
+    }
+    pros::delay(20);
   }
 }
-*/
+
