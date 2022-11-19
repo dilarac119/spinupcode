@@ -3,22 +3,22 @@
 #include "okapi/impl/device/rotarysensor/potentiometer.hpp"
 #include <chrono>
 
-//drivetrain ports
+// drivetrain ports
 using namespace okapi;
 
-const int rightFrontPort = 5;
-const int rightTopPort = 4;
-const int rightBottomPort = 13;
+const int rightFrontPort = 14;
+const int rightTopPort = 18;
+const int rightBottomPort = 19;
 
-const int leftFrontPort = 11;
-const int leftTopPort = 19;
-const int leftBottomPort = 18;
+const int leftFrontPort = 10;
+const int leftTopPort = 7;
+const int leftBottomPort = 15;
 
-//conveyor port
-const int conveyorPort = 9;
+// conveyor port
+const int conveyorPort = 1;
 
-//flywheel port
-const int flywheelPort = 7;
+// flywheel port
+const int flywheelPort = 20;
 
 // indexer port
 const char indexerPort = 'H';
@@ -34,6 +34,6 @@ const std::uint8_t encoderRPort2 = 'D';
 const std::uint8_t encoderCPort1 = 'E';
 const std::uint8_t encoderCPort2 = 'F';
 
-//const int inertialPort = 20;
-//const int inertial2Port = 5;
+// const int inertialPort = 20;
+// const int inertial2Port = 5;
 const std::uint8_t imuPort = 20;

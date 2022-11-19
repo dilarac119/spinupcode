@@ -50,9 +50,7 @@ void updateDrive() {
     rightFront.setBrakeMode(AbstractMotor::brakeMode::hold);
     rightTop.setBrakeMode(AbstractMotor::brakeMode::hold);
     rightBottom.setBrakeMode(AbstractMotor::brakeMode::hold);
-  }
-
-  else if (controller.getDigital(ControllerDigital::right) == 1) {
+  } else if (controller.getDigital(ControllerDigital::right) == 1) {
     leftFront.setBrakeMode(AbstractMotor::brakeMode::coast);
     leftTop.setBrakeMode(AbstractMotor::brakeMode::coast);
     leftBottom.setBrakeMode(AbstractMotor::brakeMode::coast);

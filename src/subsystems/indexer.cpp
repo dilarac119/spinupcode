@@ -7,7 +7,7 @@ using namespace okapi;
 
 pros::ADIDigitalOut indexer(indexerPort);
 
-ControllerButton indexerButton = ControllerButton(ControllerDigital::A);
+ControllerButton indexerButton = ControllerButton(ControllerDigital::L1);
 
 void updateIndexer() {
   if (indexerButton.changedToPressed()) {

@@ -7,9 +7,7 @@
 
 using namespace okapi;
 
-
-
-Motor flywheel(flywheelPort, false, AbstractMotor::gearset::blue,
+Motor flywheel(flywheelPort, true, AbstractMotor::gearset::blue,
                AbstractMotor::encoderUnits::degrees);
 
 enum class FlywheelState {
@@ -19,13 +17,14 @@ enum class FlywheelState {
 };
 
 FlywheelState currentFlywheelState = FlywheelState::OFF;
-FlywheelState previousFlywheelState = FlywheelState::OFF;
 
 static float target = 0;
+static const float rpmWindow = 75.0f;
 
-ControllerButton flywheelToggle = ControllerButton(ControllerDigital::L1);
+ControllerButton fullFlywheelToggle = ControllerButton(ControllerDigital::R1);
+ControllerButton halfFlywheelToggle = ControllerButton(ControllerDigital::R2);
 
-void init() {
+void fwInit() {
   pros::Task flywheelControlHandle(controlFlywheelTask);
   pros::Task updateFlywheelHandle(updateFlywheelTask);
 }
@@ -37,9 +36,9 @@ void controlFlywheelTask(void *) {
       continue;
     }
     float error = target - (flywheel.getActualVelocity() * 5.0f);
-    if (error > (target - 75.0f)) {
+    if (error > (target - rpmWindow)) {
       flywheel.moveVoltage(12000);
-    } else if (error <= -75.0f) {
+    } else if (error <= -rpmWindow) {
       flywheel.moveVoltage(0);
     } else { // Within threshold window -> Use Feedforward and P Controller
       flywheel.moveVoltage((target * 4.0f) + (error * 1.125f));
@@ -50,18 +49,18 @@ void controlFlywheelTask(void *) {
 
 void updateFlywheelTask(void *) {
   while (true) {
-    if (flywheelToggle.changedToPressed()) {
-
-      switch (currentFlywheelState) {
-      case FlywheelState::OFF:
-        currentFlywheelState = FlywheelState::HALF_SPEED;
-        break;
-      case FlywheelState::HALF_SPEED:
+    if (fullFlywheelToggle.changedToPressed()) {
+      if (currentFlywheelState != FlywheelState::FULL_SPEED) {
         currentFlywheelState = FlywheelState::FULL_SPEED;
-        break;
-      case FlywheelState::FULL_SPEED:
+      } else {
         currentFlywheelState = FlywheelState::OFF;
-        break;
+      }
+    }
+    if (halfFlywheelToggle.changedToPressed()) {
+      if (currentFlywheelState != FlywheelState::HALF_SPEED) {
+        currentFlywheelState = FlywheelState::HALF_SPEED;
+      } else {
+        currentFlywheelState = FlywheelState::OFF;
       }
     }
 
@@ -79,4 +78,3 @@ void updateFlywheelTask(void *) {
     pros::delay(20);
   }
 }
-

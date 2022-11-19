@@ -7,7 +7,7 @@
 
 using namespace okapi;
 
-Motor conveyor(conveyorPort, false, AbstractMotor::gearset::green,
+Motor conveyor(conveyorPort, false, AbstractMotor::gearset::blue,
                AbstractMotor::encoderUnits::degrees);
 
 enum class IntakeState {
@@ -19,8 +19,8 @@ enum class IntakeState {
 IntakeState currentIntakeState = IntakeState::STOPPED;
 IntakeState previousIntakeState = IntakeState::STOPPED;
 
-ControllerButton intakeToggle = ControllerButton(ControllerDigital::R1);
-ControllerButton outakeButton = ControllerButton(ControllerDigital::B);
+ControllerButton intakeButton = ControllerButton(ControllerDigital::L2);
+ControllerButton outakeButton = ControllerButton(ControllerDigital::down);
 
 void updateConveyor() {
   if (outakeButton.changedToPressed()) {
@@ -30,12 +30,10 @@ void updateConveyor() {
     currentIntakeState = previousIntakeState;
   }
 
-  if (intakeToggle.changedToPressed()) {
-    if (currentIntakeState != IntakeState::INTAKING) {
-      currentIntakeState = IntakeState::INTAKING;
-    } else {
-      currentIntakeState = IntakeState::STOPPED;
-    }
+  if (intakeButton.changedToPressed()) {
+    currentIntakeState = IntakeState::INTAKING;
+  } else if (intakeButton.changedToReleased()) {
+    currentIntakeState = IntakeState::STOPPED;
   }
 
   switch (currentIntakeState) {
