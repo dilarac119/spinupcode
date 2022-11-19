@@ -1,6 +1,6 @@
 #include "main.h"
 #include "okapi/impl/device/rotarysensor/IMU.hpp"
-#include "okapi/impl/device/rotarysensor/potentiometer.hpp"
+#include "okapi/impl/device/rotarysensor/adiEncoder.hpp"
 #include <chrono>
 
 // drivetrain ports
@@ -34,6 +34,11 @@ const std::uint8_t encoderRPort2 = 'D';
 const std::uint8_t encoderCPort1 = 'E';
 const std::uint8_t encoderCPort2 = 'F';
 
-// const int inertialPort = 20;
-// const int inertial2Port = 5;
-const std::uint8_t imuPort = 20;
+
+//const int inertial2Port = 5;
+const std::uint8_t imuPort1 = 18;
+const std::uint8_t imuPort2 = 17;
+
+
+
+const std::uint8_t opticalPort = 16;

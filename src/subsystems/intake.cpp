@@ -25,6 +25,7 @@ ControllerButton outakeButton = ControllerButton(ControllerDigital::down);
 void intakeInit() { conveyor.setBrakeMode(AbstractMotor::brakeMode::coast); }
 
 void updateConveyor() {
+
   if (outakeButton.changedToPressed()) {
     previousIntakeState = currentIntakeState;
     currentIntakeState = IntakeState::OUTTAKING;
@@ -33,9 +34,13 @@ void updateConveyor() {
   }
 
   if (intakeButton.changedToPressed()) {
-    currentIntakeState = IntakeState::INTAKING;
-  } else if (intakeButton.changedToReleased()) {
-    currentIntakeState = IntakeState::STOPPED;
+    if (currentIntakeState == IntakeState::INTAKING) {
+      previousIntakeState = currentIntakeState;
+      currentIntakeState = IntakeState::STOPPED;
+    } else {
+      previousIntakeState = currentIntakeState;
+      currentIntakeState = IntakeState::INTAKING;
+    }
   }
 
   switch (currentIntakeState) {
