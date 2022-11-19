@@ -19,8 +19,10 @@ enum class IntakeState {
 IntakeState currentIntakeState = IntakeState::STOPPED;
 IntakeState previousIntakeState = IntakeState::STOPPED;
 
-ControllerButton intakeButton = ControllerButton(ControllerDigital::L2);
+ControllerButton intakeButton = ControllerButton(ControllerDigital::L1);
 ControllerButton outakeButton = ControllerButton(ControllerDigital::down);
+
+void intakeInit() { conveyor.setBrakeMode(AbstractMotor::brakeMode::coast); }
 
 void updateConveyor() {
   if (outakeButton.changedToPressed()) {

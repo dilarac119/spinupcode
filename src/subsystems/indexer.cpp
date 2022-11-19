@@ -2,17 +2,21 @@
 #include "okapi/impl/device/button/controllerButton.hpp"
 #include "okapi/impl/device/controllerUtil.hpp"
 #include "ports.hpp"
+#include "pros/adi.hpp"
+#include "pros/rtos.hpp"
 
 using namespace okapi;
 
-pros::ADIDigitalOut indexer(indexerPort);
+pros::ADIDigitalOut indexer = pros::ADIDigitalOut(indexerPort);
 
-ControllerButton indexerButton = ControllerButton(ControllerDigital::L1);
+ControllerButton indexerButton = ControllerButton(ControllerDigital::L2);
+
+void indexerInit() { indexer.set_value(false); }
 
 void updateIndexer() {
   if (indexerButton.changedToPressed()) {
-    indexer.set_value(false);
-    pros::delay(1000);
     indexer.set_value(true);
+    pros::delay(500);
+    indexer.set_value(false);
   }
 }

@@ -7,7 +7,7 @@
 
 using namespace okapi;
 
-Motor flywheel(flywheelPort, true, AbstractMotor::gearset::blue,
+Motor flywheel(flywheelPort, false, AbstractMotor::gearset::blue,
                AbstractMotor::encoderUnits::degrees);
 
 enum class FlywheelState {
@@ -25,6 +25,7 @@ ControllerButton fullFlywheelToggle = ControllerButton(ControllerDigital::R1);
 ControllerButton halfFlywheelToggle = ControllerButton(ControllerDigital::R2);
 
 void fwInit() {
+  flywheel.setBrakeMode(AbstractMotor::brakeMode::coast);
   pros::Task flywheelControlHandle(controlFlywheelTask);
   pros::Task updateFlywheelHandle(updateFlywheelTask);
 }

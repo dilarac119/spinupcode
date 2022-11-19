@@ -9,4 +9,5 @@ extern Motor conveyor;
 
 // extern pros::Vision vision1;
 
+void intakeInit();
 void updateConveyor();

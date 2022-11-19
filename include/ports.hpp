@@ -21,7 +21,7 @@ const int conveyorPort = 1;
 const int flywheelPort = 20;
 
 // indexer port
-const char indexerPort = 'H';
+const uint8_t indexerPort = 'A';
 
 const std::uint8_t visionSensorPort = 'G'; // 8
 
