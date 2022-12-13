@@ -1,5 +1,4 @@
 #include "auton.hpp"
-#include "drive.hpp"
 #include "flywheel.hpp"
 #include "indexer.hpp"
 #include "intake.hpp"
@@ -185,12 +184,12 @@ void rollUntilColor(int color) {
 
 void autonDirect(int color) {
   
-  // drive->getModel()->tank(.2, .2);
-  // rollUntilColor(color);
-  // pros::delay(1000);
+ drive->getModel()->tank(.2, .2);
+   rollUntilColor(color);
+   pros::delay(1000);
   //-------------------------- works^
-
-  gyroPID(90, true, 400);
+}
+  //gyroPID(90, true, 400);
   
 
   // pros::delay(20);
@@ -203,7 +202,7 @@ void autonDirect(int color) {
  // pros::delay(20);
 
   // autonFlywheel();
-}
+
 
 // void autonIndirect() {
 

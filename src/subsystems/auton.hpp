@@ -27,4 +27,10 @@ static pros::Optical opticalSensor = pros::Optical(opticalPort);
 //void setFlywheelState(FlywheelState state);
 void gyroPID(float degree, bool CW, int ms = 1000);
 void autonDirect(int color);
+
+bool isRed(double hue);
+void rollerRed();
+void rollerBlue();
+void rollUntilColor(int color);
+void autonDirect(int color);
 //void autonIndirect();

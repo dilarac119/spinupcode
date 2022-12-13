@@ -30,11 +30,10 @@ const std::uint8_t encoderCPort1 = 'E';
 const std::uint8_t encoderCPort2 = 'F';
 const std::uint8_t visionSensorPort = 'G'; // 8
 
-const std::uint8_t imuPort1 = 18;
+const std::uint8_t imuPort1 = 9;
 const std::uint8_t imuPort2 = 17;
 
 // pnuematics if we use
 const std::uint8_t indexerPort = 'H';
 
-
-const std::uint8_t opticalPort = 16;
+const std::uint8_t opticalPort = 4;

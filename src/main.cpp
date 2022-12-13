@@ -14,9 +14,9 @@
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-  indexerInit();
-  intakeInit();
-  fwInit();
+ // indexerInit();
+  //intakeInit();
+  //wInit();
 }
 
 /**
@@ -49,7 +49,7 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-  autonDirect(2);
+//  autonDirect(2);
 }
 
 /**
