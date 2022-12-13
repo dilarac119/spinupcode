@@ -63,20 +63,16 @@ void updateDrive() {
 
   if (controller.getDigital(ControllerDigital::Y) == 1) {
     // red = 1, blue = 2
-    
-     autonDirect( 1);
-    // drive->getModel()->tank(.2, .2);
-    // rollUntilColor(1);
-    // pros::delay(1000);
 
+    autonDirect(1);
+  
     // roll 1
 
-    // driveForward(1.65, true);
-    // rotate(-90);
-    // driveForward(2, false);
+    driveForward(1.65, true);
+    rotate(-90);
+    driveForward(2, false);
 
-    // drive->getModel()->tank(.2, .2);
-    // rollUntilColor(1);
+    autonDirect(1);
 
     // roll 2
 

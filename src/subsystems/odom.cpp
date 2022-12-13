@@ -1,5 +1,4 @@
 #include "drive.hpp"
-#include "ports.hpp"
 #include "main.h"
 #include "okapi/api/control/iterative/iterativePosPidController.hpp"
 #include "okapi/api/device/rotarysensor/continuousRotarySensor.hpp"
@@ -8,6 +7,7 @@
 #include "okapi/impl/device/rotarysensor/IMU.hpp"
 #include "okapi/impl/device/rotarysensor/adiEncoder.hpp"
 #include "okapi/impl/device/rotarysensor/integratedEncoder.hpp"
+#include "ports.hpp"
 #include "pros/misc.h"
 #include <cmath>
 #include <iterator>
@@ -97,11 +97,11 @@ void rotate(double targetAngle) {
   rotatePID.setTarget(targetAngle);
 
   // double curAngle = drive->getState().theta.convert(okapi::degree);
-  double curAngle = imuVal(imu1.controllerGet(), imu2.controllerGet());
+  double curAngle = imu1.get();
 
   while (abs(targetAngle - curAngle) >= 3) {
     // curAngle = drive->getState().theta.convert(okapi::degree);
-    curAngle = imuVal(imu1.controllerGet(), imu2.controllerGet());
+    curAngle = imu1.get();
 
     double vel = rotatePID.step(curAngle);
 
