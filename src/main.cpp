@@ -14,9 +14,12 @@
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
- // indexerInit();
-  //intakeInit();
-  //wInit();
+
+  intakeInit();
+  fwInit();
+  
+  //indexerInit();
+  
 }
 
 /**
@@ -69,7 +72,7 @@ void opcontrol() {
   while (true) {
     updateDrive();
     updateConveyor();
-    updateIndexer();
+     updateIndexer();
     // updateOdom();
     pros::delay(10);
   }

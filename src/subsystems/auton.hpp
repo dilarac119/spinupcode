@@ -4,6 +4,8 @@
 #include "pros/motors.h"
 #include "pros/optical.hpp"
 #include "ports.hpp"
+#include "indexer.hpp"
+#include "odom.hpp"
 #include "okapi/impl/device/rotarysensor/IMU.hpp"
 #include "okapi/impl/device/rotarysensor/adiEncoder.hpp"
 //#include "okapi/impl/device/rotarysensor/potentiometer.hpp"
@@ -33,4 +35,7 @@ void rollerRed();
 void rollerBlue();
 void rollUntilColor(int color);
 void autonDirect(int color);
+void autonFlywheel(float rpm);
+void autonIndexer();
+
 //void autonIndirect();

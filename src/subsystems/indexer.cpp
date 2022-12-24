@@ -11,7 +11,9 @@ pros::ADIDigitalOut indexer = pros::ADIDigitalOut(indexerPort);
 
 ControllerButton indexerButton = ControllerButton(ControllerDigital::L2);
 
-void indexerInit() { indexer.set_value(false); }
+//void indexerInit() { indexer.set_value(false); }
+
+
 
 void updateIndexer() {
   if (indexerButton.changedToPressed()) {

@@ -42,11 +42,11 @@ okapi::ADIEncoder rightEncoder = ADIEncoder(encoderRPort1, encoderRPort2, true);
 okapi::ADIEncoder centerEncoder =
     ADIEncoder(encoderCPort1, encoderCPort2, false);
 
-double imuVal(double imu1, double imu2) {
+// double imuVal(double imu1, double imu2) {
 
-  double avg = (imu1 + imu2) / 2;
-  return avg;
-}
+//   double avg = (imu1 + imu2) / 2;
+//   return avg;
+// }
 
 // void updateOdom() {
 //     // get rotations number of rotations to find distane each wheel travels
@@ -92,8 +92,10 @@ double imuVal(double imu1, double imu2) {
 // angle in degrees
 void rotate(double targetAngle) {
   okapi::IterativePosPIDController rotatePID =
-      okapi::IterativeControllerFactory::posPID(0.015, 0, 0.0001);
+      okapi::IterativeControllerFactory::posPID(0.015, 0, 0.0003);
 
+
+  
   rotatePID.setTarget(targetAngle);
 
   // double curAngle = drive->getState().theta.convert(okapi::degree);
@@ -122,7 +124,6 @@ void rotate(double targetAngle) {
 
   drive->getModel()->tank(0, 0);
 
-  // pros::delay(1000);
 
   // leftFront.setBrakeMode(AbstractMotor::brakeMode::coast);
   // leftTop.setBrakeMode(AbstractMotor::brakeMode::coast);

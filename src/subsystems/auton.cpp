@@ -39,41 +39,42 @@
 //  cnt = 0;
 // }
 
-void flywheelShoot(int count) {
-  int cnt = 0;
-  int prevError = 0;
-  while (cnt < count) {
-    double kP = 0.03;
-    double ki = 0.0;
-    double kd = 0.1;
+// void flywheelShoot(int count) {
+//   int cnt = 0;
+//   int prevError = 0;
+//   while (cnt < count) {
+//     double kP = 0.03;
+//     double ki = 0.0;
+//     double kd = 0.1;
 
-    int error = 450 - flywheel.getActualVelocity();
-    int integral = integral + error;
-    int derivative = error - prevError;
-    int prevError = error;
-    int p = error * kP;
-    int i = integral * ki;
-    int d = derivative * kd;
+//     int error = 450 - flywheel.getActualVelocity();
+//     int integral = integral + error;
+//     int derivative = error - prevError;
+//     int prevError = error;
+//     int p = error * kP;
+//     int i = integral * ki;
+//     int d = derivative * kd;
 
-    flywheel.moveVelocity(500 + p + i + d);
+//     flywheel.moveVelocity(500 + p + i + d);
 
-    if (error - 25 <= 0 || error + 25 >= 0) {
-      indexer.set_value(false);
-      pros::delay(700);
-      indexer.set_value(true);
-      cnt++;
-    }
+//     if (error - 25 <= 0 || error + 25 >= 0) {
+//       indexer.set_value(false);
+//       pros::delay(700);
+//       indexer.set_value(true);
+//       cnt++;
+//     }
 
-    pros::delay(10);
-  }
+//     pros::delay(10);
+//   }
 
-  cnt = 0;
-}
+//   cnt = 0;
+// }
 
-void autonFlywheel() {
+
+void autonFlywheel(float rpm) {
   flywheel.setBrakeMode(AbstractMotor::brakeMode::coast);
   static const float rpmWindow = 75.0f;
-  float target = 500;
+  float target = rpm;
   while (true) {
     if (target == 0) {
       flywheel.moveVoltage(0);
@@ -86,12 +87,18 @@ void autonFlywheel() {
       flywheel.moveVoltage(0);
     } else { // Within threshold window -> Use Feedforward and P Controller
       flywheel.moveVoltage((target * 4.0f) + (error * 1.125f));
-      indexer.set_value(false);
-      pros::delay(700);
       indexer.set_value(true);
+      pros::delay(700);
+      indexer.set_value(false);
     }
     pros::delay(20);
   }
+}
+
+void autonIndexer() {
+    indexer.set_value(true);
+    pros::delay(500);
+    indexer.set_value(false);
 }
 
 bool isRed(double hue) {
@@ -182,11 +189,20 @@ void rollUntilColor(int color) {
   }
 }
 
+
+
+
 void autonDirect(int color) {
   
- drive->getModel()->tank(.2, .2);
-   rollUntilColor(color);
-   pros::delay(1000);
+  drive->getModel()->tank(.2, .2);
+  rollUntilColor(color);
+  pros::delay(1000);
+  drive->getModel()->tank(0, 0);
+  pros::delay(20);
+  driveForward(0.75, true);
+  rotate(45);
+
+
   //-------------------------- works^
 }
   //gyroPID(90, true, 400);

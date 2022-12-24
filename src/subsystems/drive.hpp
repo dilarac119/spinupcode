@@ -1,9 +1,6 @@
-
 #pragma once
 #include "main.h"
 
-
-//#include "okapi/impl/device/rotarysensor/potentiometer.hpp"
 
 using namespace okapi;
 
