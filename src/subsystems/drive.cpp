@@ -1,10 +1,9 @@
 
 #include "auton.hpp"
-#include "indexer.hpp"
+//#include "ports.hpp"
 #include "main.h"
 #include "odom.hpp"
 #include "okapi/impl/device/rotarysensor/potentiometer.hpp"
-
 
 using namespace okapi;
 
@@ -66,33 +65,10 @@ void updateDrive() {
   if (controller.getDigital(ControllerDigital::Y) == 1) {
     // red = 1, blue = 2
 
-    drive->getModel()->tank(.2, .2);
-    rollUntilColor(2);
-    pros::delay(1000);
-    drive->getModel()->tank(0, 0);
-    pros::delay(20);
-    driveForward(0.5, true);
-    pros::delay(20);
-    rotate(90);
-    pros::delay(50);
-    
-    driveForward(5, true);
-    pros::delay(400);
-    rotate(-10);
-    pros::delay(40);
-    autonFlywheel(3500);
-    pros::delay(200);
-    autonIndexer();
-    pros::delay(200);
-    autonIndexer();
-    pros::delay(20);
-    autonFlywheel(0);
-    pros::delay(20);
-    rotate(90);
-    pros::delay(20);
-    driveForward(1, false);
-    
-
-
+    //skills(2);
+    //////////////////////////
+    //autonIndirect(2);
+     //autonDirect(2);
+     gyroPID(90,true, 3000);
   }
 }

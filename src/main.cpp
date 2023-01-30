@@ -1,10 +1,11 @@
 #include "main.h"
 #include "pros/rtos.hpp"
+#include "subsystems/auton.hpp"
 #include "subsystems/drive.hpp"
 #include "subsystems/flywheel.hpp"
 #include "subsystems/indexer.hpp"
+#include "subsystems/expansion.hpp"
 #include "subsystems/intake.hpp"
-#include "subsystems/auton.hpp"
 // using namespace okapi;
 
 /**
@@ -17,9 +18,9 @@ void initialize() {
 
   intakeInit();
   fwInit();
-  
-  //indexerInit();
-  
+  expansionInit();
+  indexerInit();
+
 }
 
 /**
@@ -48,11 +49,12 @@ void competition_initialize() {}
  * for non-competition testing purposes.
  *
  * If the robot is disabled or communications is lost, the autonomous task
- * will be stopped. Re-enabling the robot will rpestart the task, not re-start it
- * from where it left off.
+ * will be stopped. Re-enabling the robot will rpestart the task, not re-start
+ * it from where it left off.
  */
 void autonomous() {
-//  autonDirect(2);
+//autonDirect(2);
+//autonIndirect(1);  // skills(1);
 }
 
 /**
@@ -72,7 +74,8 @@ void opcontrol() {
   while (true) {
     updateDrive();
     updateConveyor();
-     updateIndexer();
+    updateIndexer();
+    updateExpansion();
     // updateOdom();
     pros::delay(10);
   }

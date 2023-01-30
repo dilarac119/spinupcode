@@ -10,14 +10,6 @@ using namespace okapi;
 Motor flywheel(flywheelPort, false, AbstractMotor::gearset::blue,
                AbstractMotor::encoderUnits::degrees);
 
-enum class FlywheelState {
-  OFF = 0,
-  HALF_SPEED = 1,
-  FULL_SPEED = 2,
-};
-
-FlywheelState currentFlywheelState = FlywheelState::OFF;
-
 static float target = 0;
 static const float rpmWindow = 75.0f;
 
@@ -27,7 +19,7 @@ ControllerButton halfFlywheelToggle = ControllerButton(ControllerDigital::R2);
 void fwInit() {
   flywheel.setBrakeMode(AbstractMotor::brakeMode::coast);
   pros::Task flywheelControlHandle(controlFlywheelTask);
-  pros::Task updateFlywheelHandle(updateFlywheelTask);
+  pros::Task updateFlywheelHandle((updateFlywheelTask));
 }
 
 void controlFlywheelTask(void *) {
@@ -38,11 +30,21 @@ void controlFlywheelTask(void *) {
     }
     float error = target - (flywheel.getActualVelocity() * 5.0f);
     if (error > (target - rpmWindow)) {
-      flywheel.moveVoltage(12000);
+      /// error = 2500 - 2000
+      // 500 > 2500 -75
+      // 
+      // if (error <= -rpmWindow*8){
+      //   flywheel.moveVoltage(flywheel.getActualVelocity()*0.2f);
+      // }
+      // target - v*e/100
+      // 2500 - 2000*.8
+      // 1500
+      flywheel.moveVoltage(target - (flywheel.getActualVelocity() * 5.0f*error/100));
+      //flywheel.moveVoltage(4000);
     } else if (error <= -rpmWindow) {
       flywheel.moveVoltage(0);
     } else { // Within threshold window -> Use Feedforward and P Controller
-      flywheel.moveVoltage((target * 4.0f) + (error * 1.125f));
+      flywheel.moveVoltage((target * 4.0f) + (error * 1.5f));
     }
     pros::delay(20);
   }
@@ -70,12 +72,16 @@ void updateFlywheelTask(void *) {
       target = 0;
       break;
     case FlywheelState::HALF_SPEED:
-      target = 2000;
+      target = 2500;
       break;
     case FlywheelState::FULL_SPEED:
-      target = 3000;
+      target = 3600;
       break;
     }
     pros::delay(20);
   }
 }
+
+FlywheelState getFWState() { return currentFlywheelState; }
+
+void setFWState(FlywheelState FWstate) { currentFlywheelState = FWstate; }

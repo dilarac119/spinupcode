@@ -35,5 +35,7 @@ const std::uint8_t imuPort2 = 17;
 
 // pnuematics if we use
 const std::uint8_t indexerPort = 'F';
+const std::uint8_t expansionPort = 'E';
+
 
 const std::uint8_t opticalPort = 4;

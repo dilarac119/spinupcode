@@ -1,15 +1,11 @@
 #pragma once
 #include "main.h"
 #include "okapi/impl/device/opticalSensor.hpp"
-#include "pros/motors.h"
-#include "pros/optical.hpp"
-#include "ports.hpp"
-#include "indexer.hpp"
-#include "odom.hpp"
 #include "okapi/impl/device/rotarysensor/IMU.hpp"
 #include "okapi/impl/device/rotarysensor/adiEncoder.hpp"
+#include "ports.hpp"
+#include "pros/optical.hpp"
 //#include "okapi/impl/device/rotarysensor/potentiometer.hpp"
-
 
 using namespace okapi;
 
@@ -25,17 +21,32 @@ extern std::shared_ptr<OdomChassisController> drive;
 
 static pros::Optical opticalSensor = pros::Optical(opticalPort);
 
-// void updateAuton();
-//void setFlywheelState(FlywheelState state);
+
 void gyroPID(float degree, bool CW, int ms = 1000);
-void autonDirect(int color);
+
+// roller stuff
 
 bool isRed(double hue);
 void rollerRed();
 void rollerBlue();
 void rollUntilColor(int color);
-void autonDirect(int color);
-void autonFlywheel(float rpm);
-void autonIndexer();
+void autonRoller(int color);
 
-//void autonIndirect();
+
+
+
+
+extern void autonFlywheel();
+extern void runFW();
+
+void autonIndexer();
+void skills(int color);
+
+void driveForward(double distance, bool backwards = false);
+void rotate(double angle);
+
+void print1();
+
+
+void autonDirect(int color);
+void autonIndirect(int color);

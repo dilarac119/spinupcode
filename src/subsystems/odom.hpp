@@ -7,9 +7,7 @@ extern okapi::IterativePosPIDController drivePID;
 // //void updateOdom();
  void driveForward(double distance, bool backwards);
  void rotate(double angle);
- //void gyroPID(float degree, bool CW, int ms);
-
-
+ void gyroPID(float degree, bool CW, int ms);
 
 using namespace okapi;
 

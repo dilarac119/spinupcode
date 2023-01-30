@@ -1,4 +1,5 @@
 #include "main.h"
+#include "intake.hpp"
 #include "okapi/api/util/mathUtil.hpp"
 #include "okapi/impl/device/button/controllerButton.hpp"
 #include "okapi/impl/device/controllerUtil.hpp"
@@ -10,14 +11,7 @@ using namespace okapi;
 Motor conveyor(conveyorPort, false, AbstractMotor::gearset::blue,
                AbstractMotor::encoderUnits::degrees);
 
-enum class IntakeState {
-  STOPPED = 0,
-  INTAKING = 1,
-  OUTTAKING = 2,
-};
 
-IntakeState currentIntakeState = IntakeState::STOPPED;
-IntakeState previousIntakeState = IntakeState::STOPPED;
 
 ControllerButton intakeButton = ControllerButton(ControllerDigital::L1);
 ControllerButton outakeButton = ControllerButton(ControllerDigital::down);
@@ -55,3 +49,7 @@ void updateConveyor() {
     break;
   }
 }
+
+IntakeState getIntakeState() { return currentIntakeState; }
+
+void setIntakeState(IntakeState Istate) { currentIntakeState = Istate; }
