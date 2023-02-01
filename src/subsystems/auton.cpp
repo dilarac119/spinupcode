@@ -14,6 +14,8 @@
 #include "pros/rtos.hpp"
 #include <cstdio>
 
+auto opticalSensor = OpticalSensor(opticalPort);
+
 void print1() {
   int i = 0;
   int its = 0;
@@ -36,27 +38,51 @@ void autonIndexer() {
 
 bool isRed(double hue) {
   bool red = false;
-  if (hue >= 0 && hue <= 40) {
+  if (hue >= 0 && hue <= 50) {
     red = true;
   }
   return red;
 }
 
 void rollerRed() {
+  drive->getModel()->tank(0.2, 0.2);
   conveyor.moveVelocity(600);
+  pros::delay(300);
+  conveyor.moveVelocity(0);
+  drive->getModel()->tank(0, 0);
   pros::delay(600);
-  if (!isRed(opticalSensor.get_hue())) {
-    conveyor.moveVelocity(600);
-    pros::delay(200);
+  if (isRed(opticalSensor.getHue())) {
+    while (isRed(opticalSensor.getHue())) {
+      drive->getModel()->tank(0.2, 0.2);
+      conveyor.moveVelocity(100);
+    }
+    conveyor.moveVelocity(300);
+    pros::delay(150);
+    drive->getModel()->tank(0, 0);
+   
+  } else {
+    drive->getModel()->tank(0.2, 0.2);
+    conveyor.moveVelocity(300);
+    pros::delay(150);
+    drive->getModel()->tank(0, 0);
   }
 }
 
 void rollerBlue() {
+  drive->getModel()->tank(0.2, 0.2);
   conveyor.moveVelocity(600);
+  pros::delay(300);
+  conveyor.moveVelocity(0);
+  drive->getModel()->tank(0, 0);
   pros::delay(600);
-  if (isRed(opticalSensor.get_hue())) {
-    conveyor.moveVelocity(600);
+  if (!isRed(opticalSensor.getHue())) {
+    while (!isRed(opticalSensor.getHue())) {
+      drive->getModel()->tank(0.2, 0.2);
+      conveyor.moveVelocity(100);
+    }
+    conveyor.moveVelocity(300);
     pros::delay(200);
+    drive->getModel()->tank(0, 0);
   }
 }
 

@@ -19,8 +19,7 @@ extern Motor leftBottom;
 
 extern std::shared_ptr<OdomChassisController> drive;
 
-static pros::Optical opticalSensor = pros::Optical(opticalPort);
-
+//static pros::Optical opticalSensor = pros::Optical(opticalPort);
 
 void gyroPID(float degree, bool CW, int ms = 1000);
 
