@@ -1,15 +1,24 @@
  #pragma once
  #include "main.h"
  
+using namespace okapi;
 
 extern okapi::IterativePosPIDController drivePID;
 
-// //void updateOdom();
+
+
+
+void updateOdom();
  void driveForward(double distance, bool backwards);
  void rotate(double angle);
  void gyroPID(float degree, bool CW, int ms);
+ //void drive(double distance, bool backwards);
+ void movePIDOdom(float target, int ms, float maxV);
+ void movePID(float leftTarget, float rightTarget, int ms, float maxV);
+ void imuInnit();
+ void IEInnit();
+ //void updateOdom();
 
-using namespace okapi;
 
 namespace odom
 {

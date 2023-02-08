@@ -8,12 +8,12 @@ using namespace okapi;
 
 // big boy d-train ports
 const std::uint8_t rightFrontPort = 20;
-const std::uint8_t rightTopPort = 4;
-const std::uint8_t rightBottomPort = 5;
+const std::uint8_t rightTopPort = 11;
+const std::uint8_t rightBottomPort = 18;
 
 const std::uint8_t leftFrontPort = 2;
 const std::uint8_t leftTopPort = 3;
-const std::uint8_t leftBottomPort = 1;
+const std::uint8_t leftBottomPort = 13;
 
 // conveyor/intake sucky sucky port
 const std::uint8_t conveyorPort = 21;

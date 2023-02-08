@@ -1,4 +1,5 @@
 #include "drive.hpp"
+#include "intake.hpp"
 #include "main.h"
 #include "okapi/api/control/iterative/iterativePosPidController.hpp"
 #include "okapi/api/device/rotarysensor/continuousRotarySensor.hpp"
@@ -8,6 +9,7 @@
 #include "okapi/impl/device/rotarysensor/adiEncoder.hpp"
 #include "okapi/impl/device/rotarysensor/integratedEncoder.hpp"
 #include "ports.hpp"
+#include "pros/rtos.hpp"
 #include "pros/misc.h"
 #include <cmath>
 #include <iterator>
@@ -21,8 +23,9 @@ const double T_l = 2.5;
 const double T_r = 3.75;
 const double T_c = 1;
 
-IMU imu1(imuPort1, IMUAxes::z);
-IMU imu2(imuPort2, IMUAxes::z);
+IMU imu1(imuPort1, IMUAxes::y);
+//IMU imu2(imuPort2, IMUAxes::z);n
+
 
 double posX = 0;
 double posY = 0;
@@ -37,10 +40,15 @@ double thetaPrev = 0;
 
 bool isPressed = false;
 
-okapi::ADIEncoder leftEncoder = ADIEncoder(encoderLPort1, encoderLPort2, false);
-okapi::ADIEncoder rightEncoder = ADIEncoder(encoderRPort1, encoderRPort2, true);
-okapi::ADIEncoder centerEncoder =
-    ADIEncoder(encoderCPort1, encoderCPort2, false);
+// okapi::ADIEncoder leftEncoder = ADIEncoder(encoderLPort1, encoderLPort2, false);
+// okapi::ADIEncoder rightEncoder = ADIEncoder(encoderRPort1, encoderRPort2, true);
+// okapi::ADIEncoder centerEncoder =
+//     ADIEncoder(encoderCPort1, encoderCPort2, false);
+
+
+okapi::IntegratedEncoder leftEncoder = IntegratedEncoder( leftBottomPort, true);
+okapi::IntegratedEncoder rightEncoder = IntegratedEncoder( rightBottomPort, true);
+
 
 
 void setChassisBrakeMode(AbstractMotor::brakeMode mode) {
@@ -71,12 +79,71 @@ void resetImu(bool print = true) {
 
 
 
-// void initialize() {
-//     setChassisBrakeMode(AbstractMotor::brakeMode::brake);
-//     resetImu();
-// }
+void imuInnit() {
+    setChassisBrakeMode(AbstractMotor::brakeMode::brake);
+    resetImu();
+}
 
+void IEInnit(){
+    leftEncoder.reset();
+    rightEncoder.reset();
 
+}
+
+void movePIDOdom(float leftTarget, float rightTarget, int ms, float maxV) {
+    float currentLeftTravel = (leftEncoder.get() * (4 * M_PI)) / 36000.0f;   // [in]
+    float currentRightTravel = (rightEncoder.get() * (4 * M_PI)) / 36000.0f; // [in]
+    float leftTargetTravel = currentLeftTravel + leftTarget;                                               // [in]
+    float rightTargetTravel = currentRightTravel + rightTarget;                                            // [in]
+    float prevErrorL = 0;
+    float prevErrorR = 0;
+    float integralL = 0;
+    float integralR = 0;
+    int timer = 0;
+    while (timer < ms) { // Within time limit, increment PID loop
+        // Compute PID values from current wheel travel measurements
+        currentLeftTravel = (leftEncoder.get() * (4 * M_PI)) / 36000.0f;
+        currentRightTravel = (rightEncoder.get() * (4 * M_PI)) / 36000.0f;
+        float errorL = leftTargetTravel - currentLeftTravel;
+        float errorR = rightTargetTravel - currentRightTravel;
+        integralL += errorL;
+        integralR += errorR;
+        float derivativeL = errorL - prevErrorL;
+        float derivativeR = errorR - prevErrorR;
+        prevErrorL = errorL;
+        prevErrorR = errorR;
+        // Calculate power using PID
+        float powerL = (0.2 * errorL) + (0.0 * integralL) + (0.00 * derivativeL);
+        float powerR = (0.2 * errorR) + (0.0 * integralR) + (0.00 * derivativeR);
+        drive->getModel()->tank(powerL * maxV, powerR * maxV);
+        timer += 10;
+        pros::delay(10);
+    }
+    drive->stop();
+}
+
+void movePID(float leftTarget, float rightTarget, int ms, float maxV) {
+    float degreesL = ((-leftTarget * 360.0f) / (M_PI * 4)) * 18;
+    float degreesR = ((-rightTarget * 360.0f) / (M_PI * 4)) * 18;
+    IterativePosPIDController drivePIDL = IterativeControllerFactory::posPID(0.2, 0.0, 0.00);
+    IterativePosPIDController drivePIDR = IterativeControllerFactory::posPID(0.2, 0.0, 0.00);
+    drive->getModel()->resetSensors();
+    int timer = 0;
+    float errorL;
+    float errorR;
+    float powerL;
+    float powerR;
+    while (timer < ms) { // Within time limit, increment PID loop
+        errorL = degreesL + drive->getModel()->getSensorVals()[0];
+        errorR = degreesR + drive->getModel()->getSensorVals()[1];
+        powerL = drivePIDL.step(errorL);
+        powerR = drivePIDR.step(errorR);
+        drive->getModel()->tank(powerL * maxV, powerR * maxV);
+        timer += 10;
+        pros::delay(10);
+    }
+    drive->stop();
+}
 
 void gyroPID(float degree, bool CW, int ms) {
     float taredRotation = imu1.get();
@@ -89,7 +156,7 @@ void gyroPID(float degree, bool CW, int ms) {
         float derivative = error - prevError;
         prevError = error;
         integral += error;
-        float power = (0.01 * error) + (0.001 * integral) + (0.2 * derivative);
+        float power = (0.2 * error) + (0.00 * integral) + (0.0 * derivative);
         if (CW) {
             drive->getModel()->tank(power, -1.0f * power);
         } else {
@@ -101,6 +168,37 @@ void gyroPID(float degree, bool CW, int ms) {
     drive->stop();
 }
 
+// void movePIDOdom(float target, int ms, float maxV) {
+//     float currentTravel = ((leftEncoder.get()+rightEncoder.get())/2 * (4 * M_PI)) / 36000.0f;   // [in]
+//     // float currentRightTravel = (rightEncoder.get() * (4 * M_PI)) / 36000.0f; // [in]
+//     float targetTravel = currentTravel + target;                                               // [in]
+//     // float rightTargetTravel = currentRightTravel + rightTarget;                                            // [in]
+//     float prevError = 0;
+//     // float prevErrorR = 0;
+//     float integral = 0;
+//     // float integralR = 0;
+//     int timer = 0;
+//     while (timer < ms) { // Within time limit, increment PID loop
+//         // Compute PID values from current wheel travel measurements
+//         currentTravel = ((leftEncoder.get()+rightEncoder.get())/2  * (4 * M_PI)) / 36000.0f;
+//         // currentRightTravel = (rightEncoder.get() * (4 * M_PI)) / 36000.0f;
+//         float error = targetTravel - currentTravel;
+//         // float errorR = rightTargetTravel - currentRightTravel;
+//         integral += error;
+//         // integralR += errorR;
+//         float derivative = error - prevError;
+//         // float derivativeR = errorR - prevErrorR;
+//         prevError = error;
+//         // prevErrorR = errorR;
+//         // Calculate power using PID
+//         float power = (0.4 * error) + (0.0 * integral) + (0.00 * derivative);
+//         // float powerR = (0.3 * errorR) + (0.0 * integralR) + (0.04 * derivativeR);
+//         drive->getModel()->tank(power * maxV, power * maxV);
+//         timer += 10;
+//         pros::delay(10);
+//     }
+//     drive->stop();
+// }
 
 
 
@@ -196,36 +294,37 @@ void rotate(double targetAngle) {
 }
 
 
-// // distance in feet
-// void driveForward(double distance, bool backwards) {
-//   okapi::IterativePosPIDController drivePID =
-//       okapi::IterativeControllerFactory::posPID(0.75, 0, 0.00);
+// distance in feet
+void driveForward(double distance, bool backwards) {
+ 
+  okapi::IterativePosPIDController drivePID =
+      okapi::IterativeControllerFactory::posPID(0.9, 0.0, 0.00);
 
-//   const double target = distance;
+  const double target = distance;
 
-//   drivePID.setTarget(target);
+  drivePID.setTarget(target);
 
-//   double orgPosX = drive->getState().x.convert(okapi::foot);
-//   double orgPosY = drive->getState().y.convert(okapi::foot);
+  double orgPosX = drive->getState().x.convert(okapi::foot);
+  double orgPosY = drive->getState().y.convert(okapi::foot);
 
-//   double distTravelled = 69696.420;
+  double distTravelled = 69696.420;
 
-//   while (abs(target - distTravelled) >= 0.2) {
-//     double dx = drive->getState().x.convert(okapi::foot) - orgPosX;
-//     double dy = drive->getState().y.convert(okapi::foot) - orgPosY;
+  while (abs(target - distTravelled) >= 0.2) {
+    double dx = drive->getState().x.convert(okapi::foot) - orgPosX;
+    double dy = drive->getState().y.convert(okapi::foot) - orgPosY;
 
-//     distTravelled = sqrt(dx * dx + dy * dy);
+    distTravelled = sqrt(dx * dx + dy * dy);
 
-//     double vel = drivePID.step(distTravelled);
+    double vel = drivePID.step(distTravelled);
 
-//     if (backwards)
-//       vel = -vel;
+    if (backwards)
+      vel = -vel;
 
-//     drive->getModel()->tank(vel, vel);
+    drive->getModel()->tank(vel, vel);
 
-//     pros::delay(10);
-//   }
+    pros::delay(10);
+  }
 
-//   drivePID.reset();
-//   drive->getModel()->tank(0, 0);
-// }
+  drivePID.reset();
+  drive->getModel()->tank(0, 0);
+}

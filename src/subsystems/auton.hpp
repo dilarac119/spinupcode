@@ -22,6 +22,7 @@ extern std::shared_ptr<OdomChassisController> drive;
 //static pros::Optical opticalSensor = pros::Optical(opticalPort);
 
 void gyroPID(float degree, bool CW, int ms = 1000);
+void movePIDOdom(float leftTarget, float rightTarget, int ms, float maxV);
 
 // roller stuff
 

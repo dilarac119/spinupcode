@@ -9,4 +9,4 @@ okapi::Rate rate;
 
 pros::Vision visionSensor(visionSensorPort);
 
-// okapi::IMU imu = IMU(imuPort, IMUAxes::y);
+//okapi::IMU imu = IMU(imuPort1, IMUAxes::y);

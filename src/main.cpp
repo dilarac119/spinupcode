@@ -1,6 +1,7 @@
 #include "main.h"
 #include "pros/rtos.hpp"
 #include "subsystems/auton.hpp"
+#include "subsystems/odom.hpp"
 #include "subsystems/drive.hpp"
 #include "subsystems/flywheel.hpp"
 #include "subsystems/indexer.hpp"
@@ -20,6 +21,8 @@ void initialize() {
   fwInit();
   expansionInit();
   indexerInit();
+  imuInnit();
+  IEInnit();
 
 }
 
@@ -76,7 +79,7 @@ void opcontrol() {
     updateConveyor();
     updateIndexer();
     updateExpansion();
-    // updateOdom();
+   // updateOdom();
     pros::delay(10);
   }
 }

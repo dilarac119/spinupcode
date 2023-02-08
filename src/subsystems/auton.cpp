@@ -105,52 +105,52 @@ void autonRoller(int color) {
   drive->getModel()->tank(0, 0);
 }
 
-// void autonDirect(int color) {
+void autonDirect(int color) {
 
-//   // auton initialization
-//   FlywheelState autonFlywheelState = FlywheelState::OFF;
-//   setFWState(autonFlywheelState);
-//   // IntakeState currentIntakeState = IntakeState::STOPPED;
-//   // setIntakeState(currentIntakeState);
+  // auton initialization
+  FlywheelState autonFlywheelState = FlywheelState::OFF;
+  setFWState(autonFlywheelState);
+  // IntakeState currentIntakeState = IntakeState::STOPPED;
+  // setIntakeState(currentIntakeState);
 
-//   // first roller
-//   autonRoller(color);
-//   pros::delay(20);
+  // first roller
+  autonRoller(color);
+  pros::delay(20);
 
-//   // square up
-//   driveForward(0.6, true);
-//   pros::delay(500);
+  // square up
+  // driveForward(0.6, true);
+  // pros::delay(500);
 
-//   drive->getModel()->tank(0.5, -0.5);
-//   pros::delay(620);
-//   drive->getModel()->tank(0, 0);
+  // drive->getModel()->tank(0.5, -0.5);
+  // pros::delay(620);
+  // drive->getModel()->tank(0, 0);
 
-//   // pros::delay(200);
-//   // driveForward(2, true);
-//   // driveForward(2, true);
-//   // driveForward(1.5, true);
-//   // pros::delay(500);
-//   // rotate(-40);
-//   // pros::delay(100);
+  // pros::delay(200);
+  // driveForward(2, true);
+  // driveForward(2, true);
+  // driveForward(1.5, true);
+  // pros::delay(500);
+  // rotate(-40);
+  // pros::delay(100);
 
-//   // start flywheel
-//   autonFlywheelState = FlywheelState::HALF_SPEED;
-//   setFWState(autonFlywheelState);
-//   pros::delay(2900);
-//   drive->getModel()->tank(0, 0);
+  // start flywheel
+  autonFlywheelState = FlywheelState::HALF_SPEED;
+  setFWState(autonFlywheelState);
+  pros::delay(2900);
+  drive->getModel()->tank(0, 0);
 
-//   // firts shoot
-//   autonIndexer();
-//   pros::delay(2000);
+  // firts shoot
+  autonIndexer();
+  pros::delay(2000);
 
-//   // second shoot
-//   autonIndexer();
-//   pros::delay(20);
+  // second shoot
+  autonIndexer();
+  pros::delay(20);
 
-//   // flywheel off
-//   autonFlywheelState = FlywheelState::OFF;
-//   setFWState(autonFlywheelState);
-// }
+  // flywheel off
+  autonFlywheelState = FlywheelState::OFF;
+  setFWState(autonFlywheelState);
+}
 
 // void autonIndirect(int color) {
 
