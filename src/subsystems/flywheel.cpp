@@ -61,6 +61,10 @@ void updateFlywheelTask(void *) {
     }
     if (halfFlywheelToggle.changedToPressed()) {
       if (currentFlywheelState != FlywheelState::HALF_SPEED) {
+        if (currentFlywheelState == FlywheelState::OFF){
+          flywheel.moveVoltage(4000);
+          pros::delay(400);
+        }
         currentFlywheelState = FlywheelState::HALF_SPEED;
       } else {
         currentFlywheelState = FlywheelState::OFF;
@@ -72,10 +76,10 @@ void updateFlywheelTask(void *) {
       target = 0;
       break;
     case FlywheelState::HALF_SPEED:
-      target = 2500;
+      target = 2800;
       break;
     case FlywheelState::FULL_SPEED:
-      target = 3600;
+      target = 3000;
       break;
     }
     pros::delay(20);
