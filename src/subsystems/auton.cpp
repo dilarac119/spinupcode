@@ -38,52 +38,51 @@ void autonIndexer() {
 
 bool isRed(double hue) {
   bool red = false;
-  if (hue >= 0 && hue <= 50) {
+  if (hue >= 0 && hue <= 40) {
     red = true;
   }
   return red;
 }
 
 void rollerRed() {
-  drive->getModel()->tank(0.2, 0.2);
-  conveyor.moveVelocity(600);
-  pros::delay(300);
-  conveyor.moveVelocity(0);
-  drive->getModel()->tank(0, 0);
-  pros::delay(600);
   if (isRed(opticalSensor.getHue())) {
     while (isRed(opticalSensor.getHue())) {
-      drive->getModel()->tank(0.2, 0.2);
-      conveyor.moveVelocity(100);
+      conveyor.moveVelocity(250);
     }
-    conveyor.moveVelocity(300);
-    pros::delay(150);
+    conveyor.moveVelocity(250);
+    pros::delay(200);
+    conveyor.moveVelocity(0);
     drive->getModel()->tank(0, 0);
    
   } else {
-    drive->getModel()->tank(0.2, 0.2);
-    conveyor.moveVelocity(300);
+  
+    conveyor.moveVelocity(250);
     pros::delay(150);
+    conveyor.moveVelocity(0);
     drive->getModel()->tank(0, 0);
   }
+
 }
 
 void rollerBlue() {
-  drive->getModel()->tank(0.2, 0.2);
-  conveyor.moveVelocity(600);
-  pros::delay(300);
-  conveyor.moveVelocity(0);
-  drive->getModel()->tank(0, 0);
-  pros::delay(600);
+
   if (!isRed(opticalSensor.getHue())) {
     while (!isRed(opticalSensor.getHue())) {
-      drive->getModel()->tank(0.2, 0.2);
-      conveyor.moveVelocity(100);
+      conveyor.moveVelocity(250);
     }
-    conveyor.moveVelocity(300);
+    conveyor.moveVelocity(250);
     pros::delay(200);
+    conveyor.moveVelocity(0);
+    drive->getModel()->tank(0, 0);
+   
+  } else {
+  
+    conveyor.moveVelocity(250);
+    pros::delay(150);
+    conveyor.moveVelocity(0);
     drive->getModel()->tank(0, 0);
   }
+
 }
 
 void rollUntilColor(int color) {
@@ -133,67 +132,68 @@ void autonDirect(int color) {
   // rotate(-40);
   // pros::delay(100);
 
-  // start flywheel
-  autonFlywheelState = FlywheelState::HALF_SPEED;
-  setFWState(autonFlywheelState);
-  pros::delay(2900);
-  drive->getModel()->tank(0, 0);
+  // // start flywheel
+  // autonFlywheelState = FlywheelState::HALF_SPEED;
+  // setFWState(autonFlywheelState);
+  // pros::delay(2900);
+  // drive->getModel()->tank(0, 0);
 
-  // firts shoot
-  autonIndexer();
-  pros::delay(2000);
+  // // firts shoot
+  // autonIndexer();
+  // pros::delay(2000);
 
-  // second shoot
-  autonIndexer();
-  pros::delay(20);
+  // // second shoot
+  // autonIndexer();
+  // pros::delay(20);
 
-  // flywheel off
-  autonFlywheelState = FlywheelState::OFF;
-  setFWState(autonFlywheelState);
+  // // flywheel off
+  // autonFlywheelState = FlywheelState::OFF;
+  // setFWState(autonFlywheelState);
 }
 
-// void autonIndirect(int color) {
+void autonIndirect(int color) {
 
-//   FlywheelState autonFlywheelState = FlywheelState::OFF;
-//   setFWState(autonFlywheelState);
-//   // IntakeState currentIntakeState = IntakeState::STOPPED;
-//   // setIntakeState(currentIntakeState);
+  // FlywheelState autonFlywheelState = FlywheelState::OFF;
+  // setFWState(autonFlywheelState);
+  // IntakeState currentIntakeState = IntakeState::STOPPED;
+  // setIntakeState(currentIntakeState);
 
-//   // move to roller
-//   driveForward(1, false);
-//   pros::delay(1000);
-//   rotate(80);
-//   pros::delay(500);
-//   // driveForward(0.8, false);
+  // move to roller
+  driveForward(2, false);
+  pros::delay(1400);
 
-//   // first roller
-//   autonRoller(color);
-//   pros::delay(20);
+  drive->getModel()->tank(1, -1);  
+  pros::delay(300);
+   
 
-//   // reverse reverse
-//   driveForward(0.8, true);
-//   pros::delay(200);
-//   drive->getModel()->tank(0.2, -0.2);
-//   pros::delay(495);
-//   drive->getModel()->tank(0, 0);
+  // first roller
+  autonRoller(color);
+  pros::delay(20);
 
-//   // start flywheel
-//   autonFlywheelState = FlywheelState::FULL_SPEED;
-//   setFWState(autonFlywheelState);
-//   pros::delay(2900);
+  // // reverse reverse
+  // driveForward(0.8, true);
+  // pros::delay(200);
+  // drive->getModel()->tank(0.2, -0.2);
+  // pros::delay(495);
+  // drive->getModel()->tank(0, 0);
 
-//   // firts shoot
-//   autonIndexer();
-//   pros::delay(2000);
+  // // start flywheel
+  // autonFlywheelState = FlywheelState::FULL_SPEED;
+  // setFWState(autonFlywheelState);
+  // pros::delay(2900);
 
-//   // second shoot
-//   autonIndexer();
-//   pros::delay(20);
+  // // firts shoot
+  // autonIndexer();
+  // pros::delay(2000);
 
-//   // flywheel off
-//   autonFlywheelState = FlywheelState::OFF;
-//   setFWState(autonFlywheelState);
-// }
+  // // second shoot
+  // autonIndexer();
+  // pros::delay(20);
+
+  // // flywheel off
+  // autonFlywheelState = FlywheelState::OFF;
+  // setFWState(autonFlywheelState);
+}
 
 // void skills(int color) {
 

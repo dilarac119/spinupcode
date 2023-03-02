@@ -64,14 +64,9 @@ void updateDrive() {
 
   if (controller.getDigital(ControllerDigital::Y) == 1) {
     // red = 1, blue = 2
+    
+    driveForward(2, false);
 
-    //skills(2);
-    //////////////////////////
-    //autonIndirect(2);
-     //autonDirect(2);
-     //gyroPID(90,true, 3000);
-    // rollUntilColor(1);
-     movePID(5, 5, 20000, 1.0f);
-     //driveForward(1.5, false);
+
   }
 }

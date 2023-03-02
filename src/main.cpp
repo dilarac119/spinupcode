@@ -1,4 +1,5 @@
 #include "main.h"
+// #include "subsystems/selection.hpp"
 #include "pros/rtos.hpp"
 #include "subsystems/auton.hpp"
 #include "subsystems/odom.hpp"
@@ -7,6 +8,7 @@
 #include "subsystems/indexer.hpp"
 #include "subsystems/expansion.hpp"
 #include "subsystems/intake.hpp"
+
 // using namespace okapi;
 
 /**
@@ -23,7 +25,7 @@ void initialize() {
   indexerInit();
   imuInnit();
   IEInnit();
-
+  //selector::init();
 }
 
 /**
@@ -56,8 +58,11 @@ void competition_initialize() {}
  * it from where it left off.
  */
 void autonomous() {
-//autonDirect(2);
-//autonIndirect(1);  // skills(1);
+
+//autonDirect(1);
+autonIndirect(2);  // skills(1);
+
+
 }
 
 /**
@@ -72,6 +77,8 @@ void autonomous() {
  * If the robot is disabled or communications is lost, the
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
+ \
+ 
  */
 void opcontrol() {
   while (true) {

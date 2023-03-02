@@ -9,7 +9,7 @@ using namespace okapi;
 
 pros::ADIDigitalOut indexer = pros::ADIDigitalOut(indexerPort);
 
-ControllerButton indexerButton = ControllerButton(ControllerDigital::L2);
+ControllerButton indexerButton = ControllerButton(ControllerDigital::A);
 
 void indexerInit() { indexer.set_value(false); }
 

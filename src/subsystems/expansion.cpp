@@ -9,16 +9,23 @@ using namespace okapi;
 
 pros::ADIDigitalOut expansion = pros::ADIDigitalOut(expansionPort);
 
-ControllerButton expansionButton = ControllerButton(ControllerDigital::up);
+ControllerButton expansionButton = ControllerButton(ControllerDigital::B);
+
+
 
 void expansionInit() { expansion.set_value(false); }
+int state = 0;
 
 
 
 void updateExpansion() {
   if (expansionButton.changedToPressed()) {
-    expansion.set_value(true);
-    pros::delay(2000);
-    expansion.set_value(false);
+    if(state == 0){
+     expansion.set_value(true);
+     state++;
+    } else{
+     expansion.set_value(false);
+     state--;
+    }
   }
 }

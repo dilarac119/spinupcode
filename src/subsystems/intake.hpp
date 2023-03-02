@@ -13,6 +13,7 @@ enum class IntakeState {
   STOPPED = 0,
   INTAKING = 1,
   OUTTAKING = 2,
+  HALF = 3,
 };
 
 

@@ -13,7 +13,7 @@ void updateOdom();
  void rotate(double angle);
  void gyroPID(float degree, bool CW, int ms);
  //void drive(double distance, bool backwards);
- void movePIDOdom(float target, int ms, float maxV);
+ void movePIDOdom(float leftTarget, float rightTarget, int ms, float maxV);
  void movePID(float leftTarget, float rightTarget, int ms, float maxV);
  void imuInnit();
  void IEInnit();

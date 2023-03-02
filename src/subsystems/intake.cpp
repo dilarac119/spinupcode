@@ -14,18 +14,19 @@ Motor conveyor(conveyorPort, false, AbstractMotor::gearset::blue,
 
 
 ControllerButton intakeButton = ControllerButton(ControllerDigital::L1);
-ControllerButton outakeButton = ControllerButton(ControllerDigital::down);
+ControllerButton outakeButton = ControllerButton(ControllerDigital::L2);
+ControllerButton halfInButton = ControllerButton(ControllerDigital::up);
 
 void intakeInit() { conveyor.setBrakeMode(AbstractMotor::brakeMode::coast); }
 
 void updateConveyor() {
 
-  if (outakeButton.changedToPressed()) {
-    previousIntakeState = currentIntakeState;
-    currentIntakeState = IntakeState::OUTTAKING;
-  } else if (outakeButton.changedToReleased()) {
-    currentIntakeState = previousIntakeState;
-  }
+  // if (outakeButton.changedToPressed()) {
+  //   previousIntakeState = currentIntakeState;
+  //   currentIntakeState = IntakeState::OUTTAKING;
+  // } else if (outakeButton.changedToReleased()) {
+  //   currentIntakeState = previousIntakeState;
+  // }
 
   if (intakeButton.changedToPressed()) {
     if (currentIntakeState == IntakeState::INTAKING) {
@@ -34,6 +35,24 @@ void updateConveyor() {
     } else {
       previousIntakeState = currentIntakeState;
       currentIntakeState = IntakeState::INTAKING;
+    }
+  } 
+  if (halfInButton.changedToPressed()) {
+    if (currentIntakeState == IntakeState::HALF) {
+      previousIntakeState = currentIntakeState;
+      currentIntakeState = IntakeState::STOPPED;
+    } else {
+      previousIntakeState = currentIntakeState;
+      currentIntakeState = IntakeState::HALF;
+    }
+  }
+  if (outakeButton.changedToPressed()) {
+    if (currentIntakeState == IntakeState::OUTTAKING) {
+      previousIntakeState = currentIntakeState;
+      currentIntakeState = IntakeState::STOPPED;
+    } else {
+      previousIntakeState = currentIntakeState;
+      currentIntakeState = IntakeState::OUTTAKING;
     }
   }
 
@@ -47,6 +66,9 @@ void updateConveyor() {
   case IntakeState::OUTTAKING:
     conveyor.moveVoltage(-12000);
     break;
+  case IntakeState::HALF:
+    conveyor.moveVoltage(7000);
+    
   }
 }
 
