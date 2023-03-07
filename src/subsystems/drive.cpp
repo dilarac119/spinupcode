@@ -1,6 +1,7 @@
 
 #include "auton.hpp"
 //#include "ports.hpp"
+#include "flywheel.hpp"
 #include "main.h"
 #include "odom.hpp"
 #include "okapi/impl/device/rotarysensor/potentiometer.hpp"
@@ -65,8 +66,6 @@ void updateDrive() {
   if (controller.getDigital(ControllerDigital::Y) == 1) {
     // red = 1, blue = 2
     
-    driveForward(2, false);
-
-
+    movePIDOdom( 12, 12, 50000, 1);
   }
 }

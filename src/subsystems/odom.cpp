@@ -84,7 +84,6 @@ void IEInnit() {
   rightEncoder.reset();
 }
 
-
 void movePID(float leftTarget, float rightTarget, int ms, float maxV) {
   float degreesL = ((-leftTarget * 360.0f) / (M_PI * 4)) * 18;
   float degreesR = ((-rightTarget * 360.0f) / (M_PI * 4)) * 18;
@@ -133,35 +132,43 @@ void gyroPID(float degree, bool CW, int ms) {
   drive->stop();
 }
 void movePIDOdom(float leftTarget, float rightTarget, int ms, float maxV) {
-    float currentLeftTravel = (leftEncoder.get() * (4 * M_PI)) / 36000.0f;   // [in]
-    float currentRightTravel = (rightEncoder.get() * (4 * M_PI)) / 36000.0f; // [in]
-    float leftTargetTravel = currentLeftTravel + leftTarget;                                               // [in]
-    float rightTargetTravel = currentRightTravel + rightTarget;                                            // [in]
-    float prevErrorL = 0;
-    float prevErrorR = 0;
-    float integralL = 0;
-    float integralR = 0;
-    int timer = 0;
-    while (timer < ms) { // Within time limit, increment PID loop
-        // Compute PID values from current wheel travel measurements
-        currentLeftTravel = (leftEncoder.get() * (4 * M_PI)) / 36000.0f;
-        currentRightTravel = (rightEncoder.get() * (4 * M_PI)) / 36000.0f;
-        float errorL = leftTargetTravel - currentLeftTravel;
-        float errorR = rightTargetTravel - currentRightTravel;
-        integralL += errorL;
-        integralR += errorR;
-        float derivativeL = errorL - prevErrorL;
-        float derivativeR = errorR - prevErrorR;
-        prevErrorL = errorL;
-        prevErrorR = errorR;
-        // Calculate power using PID
-        float powerL = (0.5 * errorL) + (0 * integralL) + (0.0007 * derivativeL);
-        float powerR = (0.5 * errorR) + (0 * integralR) + (0.0007 * derivativeR);
-        drive->getModel()->tank(powerL * maxV, powerR * maxV);
-        timer += 10;
-        pros::delay(10);
-    }
-    drive->stop();
+  float currentLeftTravel = (leftEncoder.get() * (4 * M_PI)) / 36000.0f; // [in]
+  float currentRightTravel =
+      (rightEncoder.get() * (4 * M_PI)) / 36000.0f; // [in]
+  float leftSum = currentLeftTravel;
+  float rightSum = currentRightTravel;
+  float leftTargetTravel = currentLeftTravel + leftTarget;    // [in]
+  float rightTargetTravel = currentRightTravel + rightTarget; // [in]
+  float prevErrorL = 0;
+  float prevErrorR = 0;
+  float integralL = 0;
+  float integralR = 0;
+  int timer = 0;
+  while (
+      timer < ms && currentLeftTravel < 10 && currentRightTravel < 10) { // Within time limit, increment PID loop
+    // Compute PID values from current wheel travel measurements
+    currentLeftTravel = (leftEncoder.get() * (4 * M_PI));
+    currentRightTravel = (rightEncoder.get() * (4 * M_PI));
+    //currentLeftTravel = (leftEncoder.get() * (4 * M_PI)) / 36000.0f;
+    //currentRightTravel = (rightEncoder.get() * (4 * M_PI)) / 36000.0f;
+    leftSum += currentLeftTravel;
+    rightSum += currentRightTravel;
+    float errorL = leftTargetTravel - currentLeftTravel;
+    float errorR = rightTargetTravel - currentRightTravel;
+    integralL += errorL;
+    integralR += errorR;
+    float derivativeL = errorL - prevErrorL;
+    float derivativeR = errorR - prevErrorR;
+    prevErrorL = errorL;
+    prevErrorR = errorR;
+    // Calculate power using PID
+    float powerL = (0.8 * errorL) + (0 * integralL) + (0.007 * derivativeL);
+    float powerR = (0.8 * errorR) + (0 * integralR) + (0.007 * derivativeR);
+    drive->getModel()->tank(powerL * maxV, powerR * maxV);
+    timer += 10;
+    pros::delay(10);
+  }
+  drive->stop();
 }
 
 // double imuVal(double imu1, double imu2) {
@@ -282,7 +289,7 @@ void driveForward(double distance, bool backwards) {
     if (backwards)
       vel = -vel;
 
-    drive->getModel()->tank(vel*0.7, vel);
+    drive->getModel()->tank(vel * 0.7, vel);
 
     pros::delay(10);
   }

@@ -18,6 +18,8 @@ extern void updateFlywheelTask(void *);
 extern void controlFlywheelTask(void *);
 extern void flywheelBangBangControl(void*);
 
+void print1(int error);
+
 extern FlywheelState getFWState();
 extern void setFWState(FlywheelState FWstate);
 
