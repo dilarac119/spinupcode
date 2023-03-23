@@ -2,12 +2,12 @@
 // #include "subsystems/selection.hpp"
 #include "pros/rtos.hpp"
 #include "subsystems/auton.hpp"
-#include "subsystems/odom.hpp"
 #include "subsystems/drive.hpp"
+#include "subsystems/expansion.hpp"
 #include "subsystems/flywheel.hpp"
 #include "subsystems/indexer.hpp"
-#include "subsystems/expansion.hpp"
 #include "subsystems/intake.hpp"
+#include "subsystems/odom.hpp"
 
 // using namespace okapi;
 
@@ -25,7 +25,7 @@ void initialize() {
   indexerInit();
   imuInnit();
   IEInnit();
-  //selector::init();
+  // selector::init();
 }
 
 /**
@@ -59,10 +59,9 @@ void competition_initialize() {}
  */
 void autonomous() {
 
-//autonDirect(1);
-autonIndirect(2);  // skills(1);
-
-
+  // autonDirect();
+  // autonIndirect();
+  skills(1);
 }
 
 /**
@@ -78,7 +77,7 @@ autonIndirect(2);  // skills(1);
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  \
- 
+
  */
 void opcontrol() {
   while (true) {
@@ -86,7 +85,7 @@ void opcontrol() {
     updateConveyor();
     updateIndexer();
     updateExpansion();
-   // updateOdom();
+    // updateOdom();
     pros::delay(10);
   }
 }

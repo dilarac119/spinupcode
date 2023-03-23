@@ -12,6 +12,8 @@ enum class FlywheelState {
   HALF_SPEED = 1,
   FULL_SPEED = 2,
   ZOOM = 3,
+  AUTONFULLCOURT = 4,
+  AUTONLOW = 5,
 };
 
 extern void updateFlywheelTask(void *);

@@ -25,63 +25,48 @@ void fwInit() {
   pros::Task updateFlywheelHandle((updateFlywheelTask));
 }
 
-void controlFlywheelTask(void *) {
-  while (true) {
-    if (target == 0) {
-      flywheel.moveVelocity(0);
-      continue;
-    }
-    float error = target - (flywheel.getActualVelocity() * 5.0f);
-    if (error > (target - rpmWindow)) {
-      flywheel.moveVoltage(target -
-                           (flywheel.getActualVelocity() * 5.0f * error /
-                           100));
-      
-    } else if (error <= -rpmWindow) {
-      flywheel.moveVoltage(pros::c::motor_get_voltage(7)-300);
-    } else { // Within threshold window -> Use Feedforward and P Controller
-      flywheel.moveVoltage((target * 4.8f) + (error * 1.4f));
-    }
-    pros::delay(20);
-  }
-}
-
-// void flywheelBangBangControl(void *) {
+// void controlFlywheelTask(void *) {
 //   while (true) {
-//     float target = static_cast<int>(currentFlywheelState);
 //     if (target == 0) {
 //       flywheel.moveVelocity(0);
-//       pros::delay(10);
 //       continue;
 //     }
-//     float error = target - (flywheel.getActualVelocity());
-//     printf("error %f\n", error);
-//     if (error > (rpmWindow)) {
-//       flywheel.moveVelocity(12000);
+//     float error = target - (flywheel.getActualVelocity() * 5.0f);
+//     if (error > (target - rpmWindow)) {
+//       flywheel.moveVoltage(target -
+//                            (flywheel.getActualVelocity() * 5.0f * error /
+//                            100));
 
+//     } else if (error <= -rpmWindow) {
+//       flywheel.moveVoltage(pros::c::motor_get_voltage(7) - 100);
+//     } else { // Within threshold window -> Use Feedforward and P Controller
+//       flywheel.moveVoltage((target * 4.8f) + (error * 1.4f));
 //     }
-//     // else if (error <= -rpmWindow) {
-//     //   flywheel.moveVelocity(0);
-//     // }
-//     else { // Within threshold window -> Use Feedforward and P Controller
-//       flywheel.moveVelocity((target * 5.0f) + (error * 1.5f));
-//     }
-//     pros::delay(10);
+//     pros::delay(20);
 //   }
 // }
 
-// void print1(int error) {
-//   int i = 0;
-//   int its = 0;
-
-//   pros::screen::set_pen(COLOR_BLUE);
-//   while (1) {
-//     // Will print seconds started since program started.
-//     pros::screen::print(pros::E_TEXT_MEDIUM, 3, (error), i++);
-//     its++;
-//     pros::delay(1000);
-//   }
-// }
+void controlFlywheelTask(void *) {
+  while (true) {
+    if (currentFlywheelState != FlywheelState::OFF) {
+      if (flywheel.getActualVelocity() < (target - 180)) {
+        // flywheel.controllerSet(1);
+        flywheel.moveVelocity(600);
+      } else {
+        // flywheel.controllerSet(0.75);
+        flywheel.moveVelocity(target);
+      }
+    } else {
+      // flywheel.controllerSet(0);
+      double v = flywheel.getActualVelocity();
+      if (v - 5 < 0)
+        v = 0;
+      else
+        v -= 5;
+      flywheel.moveVelocity(v);
+    }
+  }
+}
 
 void updateFlywheelTask(void *) {
   while (true) {
@@ -112,13 +97,20 @@ void updateFlywheelTask(void *) {
       target = 0;
       break;
     case FlywheelState::HALF_SPEED:
-      target = 2300;
+      target = 480;
       break;
     case FlywheelState::FULL_SPEED:
-      target = 2500;
+      target = 600;
       break;
     case FlywheelState::ZOOM:
-      target = 4000;
+      target = 2400;
+      break;
+    case FlywheelState::AUTONFULLCOURT:
+      target = 1950;
+      break;
+    case FlywheelState::AUTONLOW:
+      target = 1800;
+      break;
     }
     pros::delay(20);
   }

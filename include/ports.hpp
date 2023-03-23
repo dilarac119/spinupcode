@@ -13,13 +13,13 @@ const std::uint8_t rightBottomPort = 12;
 
 const std::uint8_t leftFrontPort = 2;
 const std::uint8_t leftTopPort = 3;
-const std::uint8_t leftBottomPort = 7;
+const std::uint8_t leftBottomPort = 18;
 
 // conveyor/intake sucky sucky port
 const std::uint8_t conveyorPort = 21;
 
 // flywheel shooty port
-const std::uint8_t flywheelPort = 18;
+const std::uint8_t flywheelPort = 7;
 
 // sensors later
 const std::uint8_t encoderLPort1 = 'H';

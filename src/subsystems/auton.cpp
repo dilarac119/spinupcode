@@ -4,6 +4,7 @@
 #include "indexer.hpp"
 #include "intake.hpp"
 #include "main.h"
+#include "odom.hpp"
 #include "okapi/api/chassis/controller/odomChassisController.hpp"
 #include "okapi/api/units/QAngularSpeed.hpp"
 #include "okapi/impl/device/motor/motorGroup.hpp"
@@ -31,58 +32,30 @@ void print1() {
 
 void autonIndexer() {
   indexer.set_value(true);
-  pros::delay(500);
+  pros::delay(100);
   indexer.set_value(false);
-  pros::delay(20);
 }
 
 bool isRed(double hue) {
   bool red = false;
-  if (hue >= 0 && hue <= 40) {
+  if (hue >= 0 && hue <= 10) {
     red = true;
   }
   return red;
 }
 
 void rollerRed() {
-  if (isRed(opticalSensor.getHue())) {
-    while (isRed(opticalSensor.getHue())) {
-      conveyor.moveVelocity(250);
-    }
-    conveyor.moveVelocity(250);
-    pros::delay(200);
-    conveyor.moveVelocity(0);
-    drive->getModel()->tank(0, 0);
-   
-  } else {
-  
-    conveyor.moveVelocity(250);
-    pros::delay(150);
-    conveyor.moveVelocity(0);
-    drive->getModel()->tank(0, 0);
+  while (isRed(opticalSensor.getHue())) {
+    conveyor.moveVoltage(-10000);
   }
-
+  conveyor.moveVoltage(0);
 }
 
 void rollerBlue() {
-
-  if (!isRed(opticalSensor.getHue())) {
-    while (!isRed(opticalSensor.getHue())) {
-      conveyor.moveVelocity(250);
-    }
-    conveyor.moveVelocity(250);
-    pros::delay(200);
-    conveyor.moveVelocity(0);
-    drive->getModel()->tank(0, 0);
-   
-  } else {
-  
-    conveyor.moveVelocity(250);
-    pros::delay(150);
-    conveyor.moveVelocity(0);
-    drive->getModel()->tank(0, 0);
+  while (!isRed(opticalSensor.getHue())) {
+    conveyor.moveVoltage(-10000);
   }
-
+  conveyor.moveVoltage(0);
 }
 
 void rollUntilColor(int color) {
@@ -100,181 +73,241 @@ void autonRoller(int color) {
 
   drive->getModel()->tank(.2, .2);
   rollUntilColor(color);
-  pros::delay(1000);
+  pros::delay(10000);
   drive->getModel()->tank(0, 0);
 }
 
-void autonDirect(int color) {
+void autonFlywheelFULL() {
+  FlywheelState autonFlywheelState = FlywheelState::AUTONFULLCOURT;
+  setFWState(autonFlywheelState);
+}
 
-  // auton initialization
+void autonFlywheelLOW() {
+  FlywheelState autonFlywheelState = FlywheelState::AUTONLOW;
+  setFWState(autonFlywheelState);
+}
+
+void autonFlywheelHALF() {
+  FlywheelState autonFlywheelState = FlywheelState::HALF_SPEED;
+  setFWState(autonFlywheelState);
+}
+
+void autonFlywheelMAX() {
+  FlywheelState autonFlywheelState = FlywheelState::ZOOM;
+  setFWState(autonFlywheelState);
+}
+
+void autonFlywheelOFF() {
   FlywheelState autonFlywheelState = FlywheelState::OFF;
   setFWState(autonFlywheelState);
-  // IntakeState currentIntakeState = IntakeState::STOPPED;
-  // setIntakeState(currentIntakeState);
-
-  // first roller
-  autonRoller(color);
-  pros::delay(20);
-
-  // square up
-  // driveForward(0.6, true);
-  // pros::delay(500);
-
-  // drive->getModel()->tank(0.5, -0.5);
-  // pros::delay(620);
-  // drive->getModel()->tank(0, 0);
-
-  // pros::delay(200);
-  // driveForward(2, true);
-  // driveForward(2, true);
-  // driveForward(1.5, true);
-  // pros::delay(500);
-  // rotate(-40);
-  // pros::delay(100);
-
-  // // start flywheel
-  // autonFlywheelState = FlywheelState::HALF_SPEED;
-  // setFWState(autonFlywheelState);
-  // pros::delay(2900);
-  // drive->getModel()->tank(0, 0);
-
-  // // firts shoot
-  // autonIndexer();
-  // pros::delay(2000);
-
-  // // second shoot
-  // autonIndexer();
-  // pros::delay(20);
-
-  // // flywheel off
-  // autonFlywheelState = FlywheelState::OFF;
-  // setFWState(autonFlywheelState);
 }
 
-void autonIndirect(int color) {
+void autonDirect() {
 
-  // FlywheelState autonFlywheelState = FlywheelState::OFF;
-  // setFWState(autonFlywheelState);
-  // IntakeState currentIntakeState = IntakeState::STOPPED;
-  // setIntakeState(currentIntakeState);
+  // auton direct
+
+  autonFlywheelMAX();
+
+  // roller
+  drive->getModel()->tank(0.2, 0.2);
+  conveyor.moveVoltage(-12000);
+  pros::delay(150);
+  conveyor.moveVoltage(0);
+  pros::delay(20);
+  drive->getModel()->tank(0, 0);
+  pros::delay(200);
+
+  // // move bakv
+  // movePIDOdomR(5, 5, 500, 0.3);
+  // pros::delay(20);
+  // turnPIDOdomCC(5, 5, 500, 0.3);
+  // pros::delay(20);
+
+  // // shoot
+
+  // autonIndexer();
+  // pros::delay(20);
+  // pros::delay(1800);
+  // autonIndexer();
+  // pros::delay(10);
+  // autonFlywheelOFF();
+}
+
+void autonIndirect() {
+  // auton indirect
 
   // move to roller
-  driveForward(2, false);
-  pros::delay(1400);
-
-  drive->getModel()->tank(1, -1);  
-  pros::delay(300);
-   
-
-  // first roller
-  autonRoller(color);
+  // activate flywheel
+  autonFlywheelMAX();
   pros::delay(20);
 
-  // // reverse reverse
-  // driveForward(0.8, true);
-  // pros::delay(200);
-  // drive->getModel()->tank(0.2, -0.2);
-  // pros::delay(495);
-  // drive->getModel()->tank(0, 0);
+  movePIDOdom(24, 24, 50000, .9);
+  pros::delay(20);
+  turnPIDOdomCW(11.2, 11.2, 1000, 1);
+  pros::delay(20);
 
-  // // start flywheel
-  // autonFlywheelState = FlywheelState::FULL_SPEED;
-  // setFWState(autonFlywheelState);
-  // pros::delay(2900);
+  // creep
+  movePIDOdom(10, 10, 1000, 0.3);
+  pros::delay(30);
 
-  // // firts shoot
-  // autonIndexer();
-  // pros::delay(2000);
+  // roller
+  drive->getModel()->tank(0.2, 0.2);
+  conveyor.moveVoltage(-12000);
+  pros::delay(150);
+  conveyor.moveVoltage(0);
+  pros::delay(20);
+  drive->getModel()->tank(0, 0);
+  pros::delay(200);
 
-  // // second shoot
-  // autonIndexer();
-  // pros::delay(20);
+  // move bakv
+  movePIDOdomR(5, 5, 500, 0.3);
+  pros::delay(20);
+  turnPIDOdomCW(4.8, 4.8, 800, 0.3);
 
-  // // flywheel off
-  // autonFlywheelState = FlywheelState::OFF;
-  // setFWState(autonFlywheelState);
+  // shoot
+
+  autonIndexer();
+  pros::delay(20);
+  pros::delay(3000);
+  autonIndexer();
+  pros::delay(10);
+  autonFlywheelOFF();
 }
 
-// void skills(int color) {
+void skills(int color) {
 
-//   FlywheelState autonFlywheelState = FlywheelState::OFF;
-//   setFWState(autonFlywheelState);
+  // skills
 
-//   // first roller
-//   autonRoller(color);
-//   pros::delay(20);
-//   driveForward(1.6, true);
-//   pros::delay(300);
+  // roller 1
+  drive->getModel()->tank(0.2, 0.2);
+  conveyor.moveVoltage(-12000);
+  pros::delay(300);
+  conveyor.moveVoltage(0);
+  drive->getModel()->tank(0, 0);
+  pros::delay(20);
 
-//   rotate(90);
-//   pros::delay(500);
-//   driveForward(2, false);
-//   pros::delay(300);
+  // back up
+  movePIDOdomR(24, 24, 1500, 0.3);
+  pros::delay(500);
 
-//   autonRoller(color);
-//   pros::delay(20);
+  // activate flywheel
+  autonFlywheelLOW();
+  pros::delay(200);
 
-//   // reverse reverse
-//   driveForward(0.8, true);
-//   pros::delay(200);
-//   drive->getModel()->tank(0.2, -0.2);
-//   pros::delay(400);
-//   drive->getModel()->tank(0, 0);
+  // turn to second roller
+  turnPIDOdomCW(11, 11, 1000, .75);
+  pros::delay(500);
+  // move forward
+  movePIDOdom(22, 22, 3000, 1);
+  pros::delay(300);
 
-//   // start flywheel
-//   autonFlywheelState = FlywheelState::FULL_SPEED;
-//   setFWState(autonFlywheelState);
-//   pros::delay(2900);
+  // second roller
+  drive->getModel()->tank(0.2, 0.2);
+  conveyor.moveVoltage(-12000);
+  pros::delay(300);
+  conveyor.moveVoltage(0);
+  drive->getModel()->tank(0, 0);
+  pros::delay(20);
+  movePIDOdomR(5, 5, 1500, 0.7);
+  pros::delay(20);
 
-//   // firts shoot
-//   autonIndexer();
-//   pros::delay(2000);
+  // turn
+  turnPIDOdomCC(10.35, 10.35, 1000, .8);
+  pros::delay(20);
+  movePIDOdomR(49, 46, 4000, 0.9);
 
-//   // second shoot
-//   autonIndexer();
-//   pros::delay(20);
+  // shoot
+  pros::delay(1000);
+  autonIndexer();
+  pros::delay(20);
+  autonFlywheelHALF();
+  pros::delay(1400);
+  autonIndexer();
+  pros::delay(10);
+  autonIndexer();
+  pros::delay(20);
 
-//   // flywheel off
-//   autonFlywheelState = FlywheelState::OFF;
-//   setFWState(autonFlywheelState);
+  // reverse
+  movePIDOdom(36, 36, 3000, 0.5);
+  pros::delay(20);
 
-//   // turn
-//   drive->getModel()->tank(0.4, -0.4);
-//   pros::delay(1000);
-//   drive->getModel()->tank(0, 0);
+  // turn diagonal
+  turnPIDOdomCC(15.8, 15.8, 1000, .9);
+  pros::delay(20);
 
-//   // conveyor on
-//   conveyor.moveVelocity(600);
+  // activate conveyor
+  conveyor.moveVoltage(20000);
+  pros::delay(200);
+  movePIDOdom(61, 61, 6000, 0.7);
+  pros::delay(2000);
 
-//   // zoom
-//   driveForward(2, false);
-//   driveForward(2, false);
-//   driveForward(2, false);
-//   driveForward(2, false);
-//   driveForward(2, false);
-//   driveForward(2, false);
-//   pros::delay(3000);
+  // change flywheel speed
+  autonFlywheelFULL();
 
-//   // conveyor off
-//   conveyor.moveVelocity(0);
-//   pros::delay(20);
+  // turn to basket
+  turnPIDOdomCW(11.35, 11.35, 1200, .7);
+  pros::delay(280);
 
-//   // turn
-//   rotate(90);
-//   pros::delay(500);
+  // shoot 2
+  autonIndexer();
+  pros::delay(900);
+  autonIndexer();
+  pros::delay(1300);
+  autonIndexer();
+  pros::delay(800);
 
-//   // second pair of rollers
-//   //  first roller
-//   autonRoller(color);
-//   pros::delay(20);
-//   driveForward(0.8, false);
-//   pros::delay(200);
+  // turn back
+  // kinda diagonal
+  turnPIDOdomCW(8, 8, 900, .7);
+  pros::delay(20);
+  movePIDOdomR(30, 30, 3000, 0.9);
+  pros::delay(500);
+  // paralel to roller
+  turnPIDOdomCW(11, 11, 900, .9);
+  pros::delay(200);
+  movePIDOdomR(42, 42, 3000, 0.9);
+  pros::delay(200);
 
-//   rotate(90);
-//   pros::delay(500);
-//   driveForward(0.8, true);
-//   pros::delay(200);
+  // line up turn to roller 3
+  turnPIDOdomCW(10, 10, 1000, .9);
+  pros::delay(200);
+  movePIDOdom(20, 20, 1000, .2);
+  pros::delay(100);
 
-//   autonRoller(color);
-//   pros::delay(20);
-// }
+  // roller 3
+  drive->getModel()->tank(0.2, 0.2);
+  conveyor.moveVoltage(-12000);
+  pros::delay(300);
+  conveyor.moveVoltage(0);
+  drive->getModel()->tank(0, 0);
+  pros::delay(20);
+
+  // go back to 4
+  movePIDOdomR(21, 21, 1500, 0.7);
+  pros::delay(20);
+  // turn to roller 4
+  turnPIDOdomCW(11, 11, 1000, .9);
+  pros::delay(200);
+  movePIDOdom(21, 21, 2000, .3);
+  pros::delay(100);
+
+  // roller 4
+  drive->getModel()->tank(0.2, 0.2);
+  conveyor.moveVoltage(-12000);
+  pros::delay(300);
+  conveyor.moveVoltage(0);
+  autonFlywheelOFF();
+  drive->getModel()->tank(0, 0);
+  pros::delay(20);
+
+  // allign for expanison
+  movePIDOdomR(4, 4, 1500, 0.7);
+  pros::delay(20);
+  turnPIDOdomCC(6, 6, 1000, .9);
+  pros::delay(200);
+
+  // expansion
+  expansion.set_value(true);
+  pros::delay(50);
+  expansion.set_value(false);
+}

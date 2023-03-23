@@ -36,7 +36,11 @@ void autonRoller(int color);
 
 
 
-extern void autonFlywheel();
+extern void autonFlywheelFULL();
+extern void autonFlywheelLOW();
+extern void autonFlywheelMAX();
+extern void autonFlywheelHALF();
+extern void autonFlywheelOFF();
 extern void runFW();
 
 void autonIndexer();
@@ -48,5 +52,5 @@ void rotate(double angle);
 void print1();
 
 
-void autonDirect(int color);
-void autonIndirect(int color);
+void autonDirect();
+void autonIndirect();
