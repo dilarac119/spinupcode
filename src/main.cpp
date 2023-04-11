@@ -85,7 +85,31 @@ void opcontrol() {
     updateConveyor();
     updateIndexer();
     updateExpansion();
+
+    pros::Controller master (pros::E_CONTROLLER_MASTER);
+   
+    int count = 0;
+    std::string power = "";
+    if (!(count % 3000)) {
+      if (flywheel.getActualVelocity() < 100){
+        power = "OFF    ";
+      } else {
+        power = "ON     ";
+      }
+      if (flywheel.getActualVelocity() < 150){
+        master.print(0, 0, "flySpeed: %i %s", 0 , power);
+      } else {
+      // Only print every 50ms, the controller text update rate is slow
+      master.print(0, 0, "flySpeed: %i %s", (int)(flywheel.getActualVelocity()), power);
+      }
+      
+    }
+    count++;
+    pros::delay(2);
+  
+
     // updateOdom();
     pros::delay(10);
+
   }
 }

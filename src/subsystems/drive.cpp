@@ -154,14 +154,14 @@ void updateDrive() {
     // pros::delay(200);
 
     // //turn to second roller
-    // turnPIDOdomCW(10.8, 10.8, 1000, .75);
+    // turnPIDOdomCW(11.3, 11.3, 2000, 1);
     // pros::delay(500);
     // // move forward
-    // movePIDOdom(22, 22, 3000, 1);
-    // pros::delay(300);
+    // movePIDOdom(20.5, 20.5, 3000, 1);
+    // pros::delay(800);
 
     // // second roller
-    // drive->getModel()->tank(0.2, 0.2);
+    // drive->getModel()->tank(0.7, 0.7);
     // conveyor.moveVoltage(-12000);
     // pros::delay(300);
     // conveyor.moveVoltage(0);
@@ -171,23 +171,21 @@ void updateDrive() {
     // pros::delay(20);
 
     // // turn
-    // turnPIDOdomCC(10.35, 10.35, 1000, .8);
+    // turnPIDOdomCC(11.5, 11.5, 1000, .8);
     // pros::delay(20);
     // movePIDOdomR(49, 46, 4000, 0.9);
 
     // // shoot
-    // pros::delay(1000);
+    // pros::delay(100);
     // autonIndexer();
-    // pros::delay(20);
-    // autonFlywheelHALF();
-    // pros::delay(1400);
+    // pros::delay(1000);
     // autonIndexer();
     // pros::delay(10);
     // autonIndexer();
     // pros::delay(20);
 
     // // reverse
-    // movePIDOdom(36, 36, 3000, 0.5);
+    // movePIDOdom(38, 38, 3000, 0.5);
     // pros::delay(20);
 
     // // turn diagonal
@@ -197,11 +195,11 @@ void updateDrive() {
     // //activate conveyor
     // conveyor.moveVoltage(20000);
     // pros::delay(200);
-    // movePIDOdom(61, 61, 6000, 0.7);
+    // movePIDOdom(61, 61, 6000, 0.5);
     // pros::delay(2000);
 
     // //change flywheel speed
-    // autonFlywheelFULL();
+    // autonFlywheelLOW();
 
     // //turn to basket
     // turnPIDOdomCW(11.35, 11.35, 1200, .7);
@@ -269,5 +267,15 @@ void updateDrive() {
     // expansion.set_value(true);
     // pros::delay(50);
     // expansion.set_value(false);
+
+   // ONE TILE (24 INCHES)
+   // movePIDOdom(21, 28, 30000, 1);
+
+  // 90 DEGREE TURN
+  // turnPIDOdomCW(10, 11, 2000, 1);
+
+
+
+
   }
 }

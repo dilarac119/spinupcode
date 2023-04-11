@@ -47,23 +47,38 @@ void fwInit() {
 // }
 
 void controlFlywheelTask(void *) {
-  while (true) {
+   bool max = false;
+   //static std::string power;
+     
+  while (true) {   
     if (currentFlywheelState != FlywheelState::OFF) {
-      if (flywheel.getActualVelocity() < (target - 180)) {
-        // flywheel.controllerSet(1);
-        flywheel.moveVelocity(600);
+      if (currentFlywheelState != FlywheelState::HALF_SPEED) {
+        if (flywheel.getActualVelocity() < (target - 280)) {
+          // flywheel.controllerSet(1);
+          flywheel.moveVelocity(600);
+          // power = "ON";
+        } else {
+          // flywheel.controllerSet(0.75);
+          flywheel.moveVelocity(target);
+          // power = "ON";
+        }
       } else {
-        // flywheel.controllerSet(0.75);
-        flywheel.moveVelocity(target);
+         if (flywheel.getActualVelocity() < (target - 60)) {
+          // flywheel.controllerSet(1);
+          flywheel.moveVelocity(600);
+          // power = "ON";
+        } else {
+          // flywheel.controllerSet(0.75);
+          max = true;
+          flywheel.moveVelocity(target);
+          // power = "ON";
+        }
       }
+
     } else {
       // flywheel.controllerSet(0);
-      double v = flywheel.getActualVelocity();
-      if (v - 5 < 0)
-        v = 0;
-      else
-        v -= 5;
-      flywheel.moveVelocity(v);
+      flywheel.moveVelocity(0);
+      // power = "OFF";
     }
   }
 }
@@ -97,19 +112,19 @@ void updateFlywheelTask(void *) {
       target = 0;
       break;
     case FlywheelState::HALF_SPEED:
-      target = 480;
+      target = 400;
       break;
     case FlywheelState::FULL_SPEED:
-      target = 600;
+      target = 500;
       break;
     case FlywheelState::ZOOM:
-      target = 2400;
+      target = 600;
       break;
     case FlywheelState::AUTONFULLCOURT:
       target = 1950;
       break;
     case FlywheelState::AUTONLOW:
-      target = 1800;
+      target = 400;
       break;
     }
     pros::delay(20);

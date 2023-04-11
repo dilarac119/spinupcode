@@ -21,7 +21,7 @@ extern void controlFlywheelTask(void *);
 extern void flywheelBangBangControl(void*);
 
 void print1(int error);
-
+// static std::string power;
 extern FlywheelState getFWState();
 extern void setFWState(FlywheelState FWstate);
 

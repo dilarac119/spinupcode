@@ -141,7 +141,7 @@ void turnPIDOdomCC(float leftTarget, float rightTarget, int ms, float maxV) {
     // Calculate power using PID
     float powerL = (0.1 * errorL) + (0 * integralL) + (0.01 * derivativeL);
     float powerR = (0.1 * errorR) + (0 * integralR) + (0.01 * derivativeR);
-    drive->getModel()->tank(-1*powerL * maxV, powerR * maxV);
+    drive->getModel()->tank(-1*powerL * maxV, powerR * maxV * .85);
     timer += 10;
     pros::delay(10);
   }
@@ -178,7 +178,7 @@ void turnPIDOdomCW(float leftTarget, float rightTarget, int ms, float maxV) {
     // Calculate power using PID
     float powerL = (0.1 * errorL) + (0 * integralL) + (0.01 * derivativeL);
     float powerR = (0.1 * errorR) + (0 * integralR) + (0.01 * derivativeR);
-    drive->getModel()->tank(powerL * maxV, -1*powerR * maxV);
+    drive->getModel()->tank(powerL * maxV, -1*powerR * maxV * .85);
     timer += 10;
     pros::delay(10);
   }
@@ -213,9 +213,9 @@ void movePIDOdom(float leftTarget, float rightTarget, int ms, float maxV) {
     prevErrorL = errorL;
     prevErrorR = errorR;
     // Calculate power using PID
-    float powerL = (0.1 * errorL) + (0 * integralL) + (0.01 * derivativeL);
-    float powerR = (0.1 * errorR) + (0 * integralR) + (0.01 * derivativeR);
-    drive->getModel()->tank(powerL * maxV, powerR * maxV);
+    float powerL = (0.1 * errorL) + (0 * integralL) + (0.0 * derivativeL);
+    float powerR = (0.04 * errorR) + (0 * integralR) + (0.0 * derivativeR);
+    drive->getModel()->tank(powerL * maxV, powerR * maxV );
     timer += 10;
     pros::delay(10);
   }
@@ -252,7 +252,7 @@ void movePIDOdomR(float leftTarget, float rightTarget, int ms, float maxV) {
     // Calculate power using PID
     float powerL = (0.1 * errorL) + (0 * integralL) + (0.01 * derivativeL);
     float powerR = (0.1 * errorR) + (0 * integralR) + (0.01 * derivativeR);
-    drive->getModel()->tank(powerL * maxV * -1, powerR * maxV * -1);
+    drive->getModel()->tank(powerL * maxV * -1, powerR * maxV * -1 * .85 );
     timer += 10;
     pros::delay(10);
   }
