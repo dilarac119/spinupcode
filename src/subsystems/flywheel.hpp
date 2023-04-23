@@ -9,16 +9,21 @@ extern void fwInit();
 
 enum class FlywheelState {
   OFF = 0,
-  HALF_SPEED = 1,
-  FULL_SPEED = 2,
-  ZOOM = 3,
-  AUTONFULLCOURT = 4,
-  AUTONLOW = 5,
+  LOW_SPEED = 1,
+  MID_SPEED = 2,
+  HIGH_SPEED = 3,
+  REVERSE = 4,
+  AUTONHIGH = 5,
+  AUTONLOW = 6,
 };
 
 extern void updateFlywheelTask(void *);
+extern void updateFlywheelTaskAuton(void *);
 extern void controlFlywheelTask(void *);
+extern void controlFlywheelTaskAuton(void *);
 extern void flywheelBangBangControl(void*);
+
+static int auton;
 
 void print1(int error);
 // static std::string power;

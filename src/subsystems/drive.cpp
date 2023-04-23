@@ -65,73 +65,73 @@ void updateDrive() {
   }
 
   if (controller.getDigital(ControllerDigital::Y) == 1) {
+    auton = 1;
     // red = 1, blue = 2
 
     // // auton indirect
 
-    // // move to roller
-    // // activate flywheel
-    // autonFlywheelMAX();
-    // pros::delay(20);
+    // move to roller
+    // activate flywheel
+     autonFlywheelAUTONHIGH();
+     pros::delay(20);
 
-    // movePIDOdom(24, 24, 50000, .9);
-    // pros::delay(20);
-    // turnPIDOdomCW(11.2, 11.2, 1000, 1);
-    // pros::delay(20);
+    movePIDOdom(24, 24, 50000, .9);
+    pros::delay(20);
+    turnPIDOdomCW(9, 9, 1000, 1);
+    pros::delay(20);
 
-    // // creep
-    // movePIDOdom(10, 10, 1000, 0.3);
-    // pros::delay(30);
+    // creep
+    movePIDOdom(10, 10, 1000, 0.3);
+    pros::delay(30);
+
+    // roller
+    drive->getModel()->tank(0.2, 0.2);
+    conveyor.moveVoltage(-12000);
+    pros::delay(150);
+    conveyor.moveVoltage(0);
+    pros::delay(2000);
+    drive->getModel()->tank(0, 0);
+    pros::delay(200);
+
+    // move bakv
+    movePIDOdomR(5, 5, 500, 0.3);
+    pros::delay(20);
+    turnPIDOdomCW(3.8, 3.8, 800, 0.4);
+
+    // shoot
+    pros::delay(2000);
+    autonIndexer();
+    pros::delay(1200);
+    autonIndexer();
+    pros::delay(10);
+    autonFlywheelOFF();
+
+    // //---------------
+
+    // auton direct
+
+    // autonFlywheelAUTONLOW();
 
     // // roller
     // drive->getModel()->tank(0.2, 0.2);
     // conveyor.moveVoltage(-12000);
     // pros::delay(150);
     // conveyor.moveVoltage(0);
-    // pros::delay(2000);
     // drive->getModel()->tank(0, 0);
-    // pros::delay(200);
+    
 
     // // move bakv
     // movePIDOdomR(5, 5, 500, 0.3);
     // pros::delay(20);
-    // turnPIDOdomCW(4.8, 4.8, 800, 0.3);
+    // turnPIDOdomCC(4, 4, 800, .7);
 
     // // shoot
-
+    // pros::delay(2000);
     // autonIndexer();
-    // pros::delay(20);
-    // pros::delay(3000);
+    // pros::delay(1200);
     // autonIndexer();
-    // pros::delay(10);
+    // pros::delay(1000);
     // autonFlywheelOFF();
-
-    // //---------------
-
-    // // auton direct
-
-  //   autonFlywheelMAX();
-
-  //   // roller
-  //   drive->getModel()->tank(0.2, 0.2);
-  //   conveyor.moveVoltage(-12000);
-  //   pros::delay(150);
-  //   conveyor.moveVoltage(0);
-  //   drive->getModel()->tank(0, 0);
-
-  //  // move bakv
-  //   movePIDOdomR(5, 5, 500, 0.3);
-  //   pros::delay(20);
-  //   turnPIDOdomCC(5.1, 5.1, 800, 0.3);
-
-  //   // shoot
-  //   pros::delay(4000);
-  //   autonIndexer();
-  //   pros::delay(20);
-  //   pros::delay(3000);
-  //   autonIndexer();
-  //   pros::delay(10);
-  //   autonFlywheelOFF();
 
     //-------------------------------
 
@@ -268,14 +268,10 @@ void updateDrive() {
     // pros::delay(50);
     // expansion.set_value(false);
 
-   // ONE TILE (24 INCHES)
-   // movePIDOdom(21, 28, 30000, 1);
+    // ONE TILE (24 INCHES)
+    // movePIDOdom(21, 28, 30000, 1);
 
-  // 90 DEGREE TURN
-  // turnPIDOdomCW(10, 11, 2000, 1);
-
-
-
-
+    // 90 DEGREE TURN
+    // turnPIDOdomCW(10, 11, 2000, 1);
   }
 }

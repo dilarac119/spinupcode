@@ -22,7 +22,7 @@ const std::uint8_t conveyorPort = 21;
 const std::uint8_t flywheelPort = 7;
 
 // sensors later
-const std::uint8_t encoderLPort1 = 'H';
+//const std::uint8_t encoderLPort1 = 'H';
 const std::uint8_t encoderLPort2 = 'G';
 const std::uint8_t encoderRPort1 = 'A';
 const std::uint8_t encoderRPort2 = 'B';
@@ -36,6 +36,7 @@ const std::uint8_t imuPort2 = 17;
 // pnuematics if we use
 const std::uint8_t indexerPort = 'F';
 const std::uint8_t expansionPort = 'E';
+const std::uint8_t blooperPort = 'H';
 
 
 const std::uint8_t opticalPort = 4;

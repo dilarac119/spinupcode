@@ -8,24 +8,40 @@
 using namespace okapi;
 
 pros::ADIDigitalOut expansion = pros::ADIDigitalOut(expansionPort);
-
-ControllerButton expansionButton = ControllerButton(ControllerDigital::B);
+ControllerButton expansionButton = ControllerButton(ControllerDigital::B);    
+pros::ADIDigitalOut blooper = pros::ADIDigitalOut(blooperPort);
+ControllerButton blooperButton = ControllerButton(ControllerDigital::down);    
 
 
 
 void expansionInit() { expansion.set_value(false); }
-int state = 0;
+void blooperInit() { blooper.set_value(false); }
+
+int Estate = 0;
+int Bstate = 0;
 
 
 
 void updateExpansion() {
   if (expansionButton.changedToPressed()) {
-    if(state == 0){
+    if(Estate == 0){
      expansion.set_value(true);
-     state++;
+     Estate++;
     } else{
      expansion.set_value(false);
-     state--;
+     Estate--;
+    }
+  }
+}
+
+void updateBlooper() {
+  if (blooperButton.changedToPressed()) {
+    if(Bstate == 0){
+     blooper.set_value(true);
+     Bstate++;
+    } else{
+     blooper.set_value(false);
+     Bstate--;
     }
   }
 }

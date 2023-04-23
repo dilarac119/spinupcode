@@ -36,10 +36,9 @@ void autonRoller(int color);
 
 
 
-extern void autonFlywheelFULL();
-extern void autonFlywheelLOW();
-extern void autonFlywheelMAX();
-extern void autonFlywheelHALF();
+extern void autonFlywheelREVERSE();
+extern void autonFlywheelAUTONLOW();
+extern void autonFlywheelAUTONHIGH();
 extern void autonFlywheelOFF();
 extern void runFW();
 
